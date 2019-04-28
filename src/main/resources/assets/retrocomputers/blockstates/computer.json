@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "retrocomputers:block/computer" },
+    "facing=south": { "model": "retrocomputers:block/computer", "y": 180 },
+    "facing=west": { "model": "retrocomputers:block/computer", "y": 270 },
+    "facing=east": { "model": "retrocomputers:block/computer", "y": 90 }
+  }
+}

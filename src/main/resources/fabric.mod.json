@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "retrocomputers",
+  "version": "1.0.0",
+  "name": "RetroComputers",
+  "description": "Programmable persistent computers.",
+  "authors": ["the_real_farfetchd"],
+  "contact": {
+    "homepage": "https://github.com/therealfarfetchd/HCTM",
+    "sources": "https://github.com/therealfarfetchd/HCTM"
+  },
+  "license": "MIT",
+  "icon": "assets/retrocomputers/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [{ "value": "therealfarfetchd.retrocomputers.RetroComputers", "adapter": "kotlin" }],
+    "client": [{ "value": "therealfarfetchd.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
+  },
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.3.30",
+    "hctm-base": ">=1.0.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "parent": "retrocomputers:block/block_directional",
+  "textures": {
+    "particle": "retrocomputers:block/terminal_top",
+    "top": "retrocomputers:block/terminal_top",
+    "bottom": "retrocomputers:block/terminal_bottom",
+    "front": "retrocomputers:block/terminal_front",
+    "back": "retrocomputers:block/terminal_back",
+    "side": "retrocomputers:block/terminal_side"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "block.retrocomputers.computer": "Computer",
+  "block.retrocomputers.terminal": "Terminal",
+  "block.retrocomputers.disk_drive": "Disk Drive",
+  "block.retrocomputers.redstone_port": "Redstone Port",
+  "block.retrocomputers.redstone_port_analog": "Analog Redstone Port",
+  "block.retrocomputers.radio": "Wireless Transceiver",
+  "block.retrocomputers.backplane": "Backplane",
+  "block.retrocomputers.memory": "8K RAM Module",
+  "block.retrocomputers.ribbon_cable": "Ribbon Cable",
+  "block.retrocomputers.sortron": "Sortron",
+  "block.retrocomputers.retinal_scanner": "Retinal Scanner",
+  "item.retrocomputers.user_disk": "Floppy Disk",
+  "item.retrocomputers.screwdriver": "Screwdriver",
+  "item.retrocomputers.disk_minforth": "Minimal FORTH Boot Disk",
+  "item.retrocomputers.disk_forth": "FORTH Boot Disk",
+  "item.retrocomputers.disk_extforth": "Extended FORTH Boot Disk",
+  "item.retrocomputers.disk_decompiler": "FORTH Decompiler",
+  "item.retrocomputers.disk_radio": "Transceiver Programs",
+  "item.retrocomputers.disk_sortron": "Sortron Programs",
+  "item.retrocomputers.disk_retinal": "Retinal Scanner Programs",
+  "itemGroup.retrocomputers.all": "RetroComputers"
+}
