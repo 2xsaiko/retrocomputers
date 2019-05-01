@@ -29,17 +29,24 @@ float get_pixel(in ivec2 px) {
     return float((lineData >> (7 - chPixel.x)) & 1);
 }
 
-float get_pixel_with_fx(in ivec2 px) {
+float get_pixel_with_fx(in vec2 screenPos) {
+    ivec2 px = ivec2(screenPos);
+    vec2 partial = fract(screenPos);
+
     float strength = get_pixel(px);
 
-    float f = 0;
-    for (int dist = 6; dist > 0; dist--) {
-        f *= 0.5;
-        f = max(f, get_pixel(px - ivec2(dist, 0)) * 0.3);
+    float x = 0;
+    for (int dist = 1; dist < 6; dist++) {
+        float f = get_pixel(px - ivec2(dist, 0)) * 0.3;
+        if (f > 0) {
+            x = f * pow(0.5, dist + partial.x - 1);
+            break;
+        }
     }
-    strength = min(1, strength + f);
+    strength = min(1, strength + x);
 
     if (px.y % 2 == 0) strength *= 0.9;
+    strength *= mix(0.25, 1, sin(partial.y * 3.141592654));
 
     strength *= dot(vec3(0, 0, 1), normalize(vec3(px - 0.5 * vec2(SCREEN_WIDTH * 8, SCREEN_HEIGHT * 8), 300)));
 
@@ -47,9 +54,9 @@ float get_pixel_with_fx(in ivec2 px) {
 }
 
 void main() {
-    ivec2 px = ivec2(uv1.x * SCREEN_WIDTH * 8, uv1.y * SCREEN_HEIGHT * 8);
+    vec2 screenPos = vec2(uv1.x * SCREEN_WIDTH * 8, uv1.y * SCREEN_HEIGHT * 8);
 
-    float strength = get_pixel_with_fx(px);
+    float strength = get_pixel_with_fx(screenPos);
 
     vec3 color = mix(BGCOLOR, FGCOLOR, strength);
 

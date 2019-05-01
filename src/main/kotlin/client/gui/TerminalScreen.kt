@@ -5,7 +5,11 @@ import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.platform.TextureUtil
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.GlFramebuffer
 import net.minecraft.client.gui.Screen
+import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.VertexFormats
 import net.minecraft.text.TranslatableTextComponent
 import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.Vec3d
@@ -22,6 +26,7 @@ import therealfarfetchd.retrocomputers.client.init.Shaders
 import therealfarfetchd.retrocomputers.common.block.TerminalEntity
 import therealfarfetchd.retrocomputers.common.init.Packets
 import kotlin.experimental.xor
+import kotlin.math.round
 
 private val buf = BufferUtils.createByteBuffer(16384)
 
@@ -30,12 +35,16 @@ private val vao = GL30.glGenVertexArrays()
 private val screenTex = createTexture()
 private val charsetTex = createTexture()
 
+private const val scale = 8
+
 class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent("block.retrocomputers.terminal")) {
 
   private var uCharset = 0
   private var uScreen = 0
   private var aXyz = 0
   private var aUv = 0
+
+  private var fb: GlFramebuffer? = null
 
   override fun tick() {
     val minecraft = minecraft!!
@@ -47,6 +56,19 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent(
     renderBackground()
 
     val sh = Shaders.screen()
+    val fb = fb ?: return
+    val mc = minecraft ?: return
+
+    fb.setTexFilter(if ((mc.window.scaleFactor.toInt() % 2) == 0) GL11.GL_NEAREST else GL11.GL_LINEAR)
+
+    fb.beginWrite(true)
+    GlStateManager.matrixMode(GL11.GL_PROJECTION)
+    GlStateManager.pushMatrix()
+    GlStateManager.loadIdentity()
+    GlStateManager.ortho(0.0, 1.0, 1.0, 0.0, -1.0, 1.0)
+    GlStateManager.matrixMode(GL11.GL_MODELVIEW)
+    GlStateManager.pushMatrix()
+    GlStateManager.loadIdentity()
 
     GLX.glUseProgram(sh)
     GL30.glBindVertexArray(vao)
@@ -94,6 +116,31 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent(
     GlStateManager.disableTexture()
     GlStateManager.activeTexture(GL13.GL_TEXTURE0)
     GlStateManager.bindTexture(0)
+
+    mc.framebuffer.beginWrite(true)
+    fb.beginRead()
+
+    GlStateManager.matrixMode(GL11.GL_PROJECTION)
+    GlStateManager.popMatrix()
+    GlStateManager.matrixMode(GL11.GL_MODELVIEW)
+    GlStateManager.popMatrix()
+
+    GlStateManager.color4f(1f, 1f, 1f, 1f)
+
+    val swidth = 8 * 80 * 0.5
+    val sheight = 8 * 50 * 0.5
+    val x1 = round(width / 2.0 - swidth / 2.0)
+    val y1 = round(height / 2.0 - sheight / 2.0)
+
+    val t = Tessellator.getInstance()
+    val buf = t.bufferBuilder
+    buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV)
+    buf.vertex(x1, y1, 0.0).texture(0, 1).next()
+    buf.vertex(x1, y1 + sheight, 0.0).texture(0, 0).next()
+    buf.vertex(x1 + swidth, y1 + sheight, 0.0).texture(1, 0).next()
+    buf.vertex(x1 + swidth, y1, 0.0).texture(1, 1).next()
+    t.draw()
+
   }
 
   override fun keyPressed(key: Int, scancode: Int, modifiers: Int): Boolean {
@@ -140,14 +187,10 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent(
     minecraft!!.keyboard.enableRepeatEvents(true)
 
     initDrawData()
+    initFb()
   }
 
   private fun initDrawData() {
-    val swidth = 8 * 40
-    val sheight = 8 * 25
-    val x1 = width / 2f - swidth / 2f
-    val y1 = height / 2f - sheight / 2f
-
     val sh = Shaders.screen()
 
     GLX.glUseProgram(sh)
@@ -165,17 +208,15 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent(
 
     buf.clear()
 
-    // @formatter:off
     floatArrayOf(
-      x1,          y1,           0f, 0f, 0f,
-      x1 + swidth, y1 + sheight, 0f, 1f, 1f,
-      x1 + swidth, y1,           0f, 1f, 0f,
+      0f, 0f, 0f, 0f, 0f,
+      1f, 1f, 0f, 1f, 1f,
+      1f, 0f, 0f, 1f, 0f,
 
-      x1,          y1,           0f, 0f, 0f,
-      x1,          y1 + sheight, 0f, 0f, 1f,
-      x1 + swidth, y1 + sheight, 0f, 1f, 1f
+      0f, 0f, 0f, 0f, 0f,
+      0f, 1f, 0f, 0f, 1f,
+      1f, 1f, 0f, 1f, 1f
     ).forEach { buf.putFloat(it) }
-    // @formatter:on
 
     buf.rewind()
 
@@ -186,8 +227,17 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent(
     GLX.glUseProgram(0)
   }
 
+  private fun initFb() {
+    fb?.delete()
+    val scale = 4
+    fb = GlFramebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
+    //    fb!!.setTexFilter(GL11.GL_LINEAR)
+  }
+
   override fun removed() {
     minecraft!!.keyboard.enableRepeatEvents(false)
+    fb?.delete()
+    fb = null
   }
 
   override fun isPauseScreen() = false
