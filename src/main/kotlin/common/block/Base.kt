@@ -25,6 +25,7 @@ import net.minecraft.world.World
 import therealfarfetchd.hctm.common.wire.BlockPartProvider
 import therealfarfetchd.hctm.common.wire.ConnectionHandlers
 import therealfarfetchd.hctm.common.wire.Constraints
+import therealfarfetchd.hctm.common.wire.FullBlockPartExtType
 import therealfarfetchd.hctm.common.wire.NetNode
 import therealfarfetchd.hctm.common.wire.NodeView
 import therealfarfetchd.hctm.common.wire.PartExt
@@ -73,7 +74,7 @@ abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), B
 
 }
 
-object MachinePartExt : PartExt, PartIoProvider {
+object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
     return ConnectionHandlers.FullBlock.tryConnect(self, world, pos, nv, Constraints(PartIoCarrier::class))
