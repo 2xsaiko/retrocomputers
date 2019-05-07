@@ -231,7 +231,6 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent(
     fb?.delete()
     val scale = 4
     fb = GlFramebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
-    //    fb!!.setTexFilter(GL11.GL_LINEAR)
   }
 
   override fun removed() {
