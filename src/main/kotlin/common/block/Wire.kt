@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import therealfarfetchd.hctm.common.block.BaseWireBlock
 import therealfarfetchd.hctm.common.wire.ConnectionHandlers
 import therealfarfetchd.hctm.common.wire.Constraints
 import therealfarfetchd.hctm.common.wire.NetNode

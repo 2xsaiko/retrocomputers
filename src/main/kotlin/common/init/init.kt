@@ -10,8 +10,8 @@ import net.minecraft.item.Item.Settings
 import net.minecraft.item.ItemGroup
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import therealfarfetchd.hctm.common.block.BaseWireItem
 import therealfarfetchd.retrocomputers.ModID
-import therealfarfetchd.retrocomputers.common.block.BaseWireItem
 import therealfarfetchd.retrocomputers.common.block.ComputerBlock
 import therealfarfetchd.retrocomputers.common.block.ComputerEntity
 import therealfarfetchd.retrocomputers.common.block.DiskDriveBlock
