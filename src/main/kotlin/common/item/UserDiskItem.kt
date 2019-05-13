@@ -2,9 +2,9 @@ package therealfarfetchd.retrocomputers.common.item
 
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.StringTextComponent
-import net.minecraft.text.TextComponent
 import therealfarfetchd.retrocomputers.common.item.ext.ItemDisk
 import java.io.RandomAccessFile
 import java.nio.file.Files
@@ -13,8 +13,8 @@ import java.util.*
 
 class UserDiskItem : Item(Item.Settings().stackSize(1)), ItemDisk {
 
-  override fun getTranslatedNameTrimmed(stack: ItemStack): TextComponent {
-    if (hasLabel(stack)) return StringTextComponent(getLabel(stack))
+  override fun getTranslatedNameTrimmed(stack: ItemStack): Component {
+    if (hasLabel(stack)) return TextComponent(getLabel(stack))
 
     return super.getTranslatedNameTrimmed(stack)
   }

@@ -52,7 +52,7 @@ abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), B
     state.rotate(mirror.getRotation(state.get<Direction>(Direction) as Direction))
 
   override fun appendProperties(b: Builder<Block, BlockState>) {
-    b.with(Direction)
+    b.add(Direction)
   }
 
   override fun method_9517(state: BlockState, world: IWorld, pos: BlockPos, flags: Int) {

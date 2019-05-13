@@ -28,8 +28,8 @@ object RetroComputers : ModInitializer {
       SERVER -> ServerProxy()
     }
 
-    BlockEntityTypes
     Blocks
+    BlockEntityTypes
     Items
     Packets
     Resources

@@ -22,20 +22,7 @@ import therealfarfetchd.retrocomputers.common.block.WireBlock
 import therealfarfetchd.retrocomputers.common.item.ImageDiskItem
 import therealfarfetchd.retrocomputers.common.item.UserDiskItem
 import therealfarfetchd.retrocomputers.common.packet.server.onKeyTypedTerminal
-
-object BlockEntityTypes {
-
-  val Computer = create(::ComputerEntity, "computer")
-  val Terminal = create(::TerminalEntity, "terminal")
-  val DiskDrive = create(::DiskDriveEntity, "disk_drive")
-
-  //  val Wire = create(::WireEntity, "wire")
-
-  private fun <T : BlockEntity> create(builder: () -> T, name: String): BlockEntityType<T> {
-    return Registry.register(Registry.BLOCK_ENTITY, Identifier(ModID, name), BlockEntityType.Builder.create(builder).build(null))
-  }
-
-}
+import java.util.function.Supplier
 
 object Blocks {
 
@@ -47,6 +34,20 @@ object Blocks {
 
   private fun <T : Block> create(block: T, name: String): T {
     return Registry.register(Registry.BLOCK, Identifier(ModID, name), block)
+  }
+
+}
+
+object BlockEntityTypes {
+
+  val Computer = create(::ComputerEntity, "computer", Blocks.Computer)
+  val Terminal = create(::TerminalEntity, "terminal", Blocks.Terminal)
+  val DiskDrive = create(::DiskDriveEntity, "disk_drive", Blocks.DiskDrive)
+
+  //  val Wire = create(::WireEntity, "wire")
+
+  private fun <T : BlockEntity> create(builder: () -> T, name: String, vararg blocks: Block): BlockEntityType<T> {
+    return Registry.register(Registry.BLOCK_ENTITY, Identifier(ModID, name), BlockEntityType.Builder.create(Supplier(builder), *blocks).build(null))
   }
 
 }

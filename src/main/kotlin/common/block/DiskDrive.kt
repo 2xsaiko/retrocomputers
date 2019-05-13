@@ -48,7 +48,7 @@ class DiskDriveBlock : BaseBlock() {
 
   override fun appendProperties(b: Builder<Block, BlockState>) {
     super.appendProperties(b)
-    b.with(DiskDriveProperties.HasDisk)
+    b.add(DiskDriveProperties.HasDisk)
   }
 
   override fun createBlockEntity(view: BlockView) = DiskDriveEntity()

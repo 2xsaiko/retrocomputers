@@ -4,8 +4,8 @@ import com.mojang.blaze3d.platform.GLX
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resource.ResourceManager
-import net.minecraft.resource.ResourceReloadListener.Helper
-import net.minecraft.resource.ResourceType.ASSETS
+import net.minecraft.resource.ResourceReloadListener.Synchronizer
+import net.minecraft.resource.ResourceType.CLIENT_RESOURCES
 import net.minecraft.util.Identifier
 import net.minecraft.util.profiler.Profiler
 import org.lwjgl.opengl.GL11
@@ -20,14 +20,14 @@ object Shaders {
   fun screen() = screen
 
   init {
-    ResourceManagerHelper.get(ASSETS).registerReloadListener(object : IdentifiableResourceReloadListener {
+    ResourceManagerHelper.get(CLIENT_RESOURCES).registerReloadListener(object : IdentifiableResourceReloadListener {
 
-      override fun reload(helper: Helper, rm: ResourceManager, profiler: Profiler, profiler1: Profiler, executor: Executor, executor1: Executor): CompletableFuture<Void> {
+      override fun reload(s: Synchronizer, rm: ResourceManager, profiler: Profiler, profiler1: Profiler, executor: Executor, executor1: Executor): CompletableFuture<Void> {
         return CompletableFuture.runAsync(Runnable {
           if (screen != 0) GLX.glDeleteProgram(screen)
 
           screen = loadShader(rm, "screen")
-        }, executor1).thenCompose<Void> { helper.waitForAll(null) }
+        }, executor1).thenCompose<Void> { s.whenPrepared(null) }
       }
 
       override fun getFabricId(): Identifier = Identifier(ModID, "shaders")

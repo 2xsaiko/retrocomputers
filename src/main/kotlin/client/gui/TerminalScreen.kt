@@ -10,7 +10,7 @@ import net.minecraft.client.gl.GlFramebuffer
 import net.minecraft.client.gui.Screen
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormats
-import net.minecraft.text.TranslatableTextComponent
+import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.Vec3d
 import org.lwjgl.BufferUtils
@@ -37,7 +37,7 @@ private val charsetTex = createTexture()
 
 private const val scale = 8
 
-class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableTextComponent("block.retrocomputers.terminal")) {
+class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("block.retrocomputers.terminal")) {
 
   private var uCharset = 0
   private var uScreen = 0
