@@ -17,7 +17,7 @@ object RetroComputersClient : ClientModInitializer {
 
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
       val model = UnbakedWireModel(Identifier(ModID, "block/ribbon_cable"), 0.5f, 0.0625f, 32.0f)
-      ModelVariantProvider { modelId, _ -> model.takeIf { Identifier(modelId.namespace, modelId.path) == Registry.BLOCK.getId(Blocks.Wire) } }
+      ModelVariantProvider { modelId, _ -> model.takeIf { Identifier(modelId.namespace, modelId.path) == Registry.BLOCK.getId(Blocks.RibbonCable) } }
     }
   }
 
