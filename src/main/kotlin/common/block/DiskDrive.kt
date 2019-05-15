@@ -18,9 +18,9 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+import therealfarfetchd.hctm.common.util.ext.makeStack
 import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
 import therealfarfetchd.retrocomputers.common.item.ext.ItemDisk
-import therealfarfetchd.retrocomputers.common.util.ext.makeStack
 import therealfarfetchd.retrocomputers.common.util.shr
 import therealfarfetchd.retrocomputers.common.util.unsigned
 import kotlin.experimental.and
