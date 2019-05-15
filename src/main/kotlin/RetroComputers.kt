@@ -40,7 +40,7 @@ object RetroComputers : ModInitializer {
         it += Items.Computer.makeStack()
         it += Items.Terminal.makeStack()
         it += Items.DiskDrive.makeStack()
-        it += Items.Wire.makeStack()
+        it += Items.RibbonCable.makeStack()
         it += Items.UserDisk.makeStack()
         it += Items.SysDisks.map { it.makeStack() }
       }.build()
