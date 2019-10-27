@@ -8,8 +8,12 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.state.StateFactory.Builder
+import net.minecraft.state.StateManager.Builder
 import net.minecraft.state.property.BooleanProperty
+import net.minecraft.util.ActionResult
+import net.minecraft.util.ActionResult.FAIL
+import net.minecraft.util.ActionResult.PASS
+import net.minecraft.util.ActionResult.SUCCESS
 import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.Tickable
@@ -33,9 +37,9 @@ class DiskDriveBlock : BaseBlock() {
     defaultState = defaultState.with(DiskDriveProperties.HasDisk, false)
   }
 
-  override fun activate(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): Boolean {
-    val ent = world.getBlockEntity(pos) as? DiskDriveEntity ?: return false
-    return ent.ejectDisk() || ent.insertDisk(player.getStackInHand(hand))
+  override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    val ent = world.getBlockEntity(pos) as? DiskDriveEntity ?: return FAIL
+    return if (ent.ejectDisk() || ent.insertDisk(player.getStackInHand(hand))) SUCCESS else PASS
   }
 
   override fun onBlockRemoved(state: BlockState, world: World, pos: BlockPos, newState: BlockState, boolean_1: Boolean) {
@@ -56,7 +60,7 @@ class DiskDriveBlock : BaseBlock() {
 }
 
 object DiskDriveProperties {
-  val HasDisk = BooleanProperty.create("has_disk")
+  val HasDisk = BooleanProperty.of("has_disk")
 }
 
 class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {

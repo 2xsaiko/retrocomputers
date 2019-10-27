@@ -2,21 +2,21 @@ package therealfarfetchd.retrocomputers.common.item
 
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.TextComponent
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import therealfarfetchd.retrocomputers.common.item.ext.ItemDisk
 import java.io.RandomAccessFile
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
-class UserDiskItem : Item(Item.Settings().stackSize(1)), ItemDisk {
+class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
-  override fun getTranslatedNameTrimmed(stack: ItemStack): Component {
-    if (hasLabel(stack)) return TextComponent(getLabel(stack))
+  override fun getName(stack: ItemStack): Text {
+    if (hasLabel(stack)) return LiteralText(getLabel(stack))
 
-    return super.getTranslatedNameTrimmed(stack)
+    return super.getName(stack)
   }
 
   override fun getLabel(stack: ItemStack): String {
@@ -27,11 +27,11 @@ class UserDiskItem : Item(Item.Settings().stackSize(1)), ItemDisk {
     stack.orCreateTag.putString("disk_name", str)
   }
 
-  fun hasLabel(stack: ItemStack): Boolean = stack.tag?.containsKey("disk_name") ?: false
+  fun hasLabel(stack: ItemStack): Boolean = stack.tag?.contains("disk_name") ?: false
 
   override fun getUuid(stack: ItemStack): UUID {
     val tag = stack.orCreateTag
-    if (!tag.hasUuid("uuid")) tag.putUuid("uuid", UUID.randomUUID())
+    if (!tag.containsUuid("uuid")) tag.putUuid("uuid", UUID.randomUUID())
     return tag.getUuid("uuid")
   }
 

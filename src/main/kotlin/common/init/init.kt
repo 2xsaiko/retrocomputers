@@ -81,7 +81,7 @@ object Items {
   val UserDisk = create(UserDiskItem(), "user_disk")
 
   private fun <T : Block> create(block: T, name: String): BlockItem {
-    return create(BlockItem(block, Settings().itemGroup(ItemGroup.REDSTONE)), name)
+    return create(BlockItem(block, Settings().group(ItemGroup.REDSTONE)), name)
   }
 
   private fun <T : Item> create(item: T, name: String): T {

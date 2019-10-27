@@ -3,6 +3,9 @@ package therealfarfetchd.retrocomputers.common.block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.util.ActionResult
+import net.minecraft.util.ActionResult.FAIL
+import net.minecraft.util.ActionResult.SUCCESS
 import net.minecraft.util.Hand
 import net.minecraft.util.Tickable
 import net.minecraft.util.hit.BlockHitResult
@@ -17,10 +20,10 @@ import kotlin.experimental.xor
 
 class TerminalBlock : BaseBlock() {
 
-  override fun activate(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): Boolean {
-    val te = world.getBlockEntity(pos) as? TerminalEntity ?: return false
+  override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    val te = world.getBlockEntity(pos) as? TerminalEntity ?: return FAIL
     if (world.isClient) RetroComputers.proxy.openTerminalScreen(te)
-    return true
+    return SUCCESS
   }
 
   override fun createBlockEntity(view: BlockView) = TerminalEntity()

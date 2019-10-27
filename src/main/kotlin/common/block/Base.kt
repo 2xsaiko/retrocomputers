@@ -14,7 +14,7 @@ import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.state.StateFactory.Builder
+import net.minecraft.state.StateManager.Builder
 import net.minecraft.util.BlockMirror
 import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
@@ -40,7 +40,7 @@ abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), B
   }
 
   override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-    return this.defaultState.with(Direction, ctx.playerHorizontalFacing.opposite)
+    return this.defaultState.with(Direction, ctx.playerFacing.opposite)
   }
 
   override fun getRenderType(p0: BlockState?) = MODEL
@@ -80,7 +80,7 @@ object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
     return ConnectionHandlers.FullBlock.tryConnect(self, world, pos, nv, Constraints(PartIoCarrier::class))
   }
 
-  override fun toTag(): Tag = ByteTag(0)
+  override fun toTag(): Tag = ByteTag.of(0)
 
   private fun getBlockEnt(world: World, pos: BlockPos): BaseBlockEntity? {
     return world.getBlockEntity(pos) as? BaseBlockEntity

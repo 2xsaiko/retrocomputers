@@ -3,6 +3,8 @@ package therealfarfetchd.retrocomputers.common.block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.util.ActionResult
+import net.minecraft.util.ActionResult.SUCCESS
 import net.minecraft.util.Hand
 import net.minecraft.util.Tickable
 import net.minecraft.util.hit.BlockHitResult
@@ -20,13 +22,13 @@ class ComputerBlock : BaseBlock() {
 
   override fun createBlockEntity(view: BlockView) = ComputerEntity()
 
-  override fun activate(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): Boolean {
-    if (world.isClient) return true
+  override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    if (world.isClient) return SUCCESS
 
-    val ent = world.getBlockEntity(pos) as? ComputerEntity ?: return true
+    val ent = world.getBlockEntity(pos) as? ComputerEntity ?: return SUCCESS
     ent.cpu.isRunning = !ent.cpu.isRunning
 
-    return true
+    return SUCCESS
   }
 
 }

@@ -8,7 +8,7 @@ import therealfarfetchd.retrocomputers.common.init.Resources
 import therealfarfetchd.retrocomputers.common.item.ext.ItemDisk
 import java.util.*
 
-class ImageDiskItem(val image: Identifier) : Item(Item.Settings().stackSize(1)), ItemDisk {
+class ImageDiskItem(val image: Identifier) : Item(Item.Settings().maxCount(1)), ItemDisk {
 
   override fun getLabel(stack: ItemStack): String = "System Disk"
 

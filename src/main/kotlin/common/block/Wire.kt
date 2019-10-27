@@ -19,7 +19,6 @@ import therealfarfetchd.hctm.common.wire.PartExt
 import therealfarfetchd.hctm.common.wire.WirePartExtType
 import therealfarfetchd.retrocomputers.common.block.wire.PartIoCarrier
 import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
-import net.minecraft.block.Blocks as MCBlocks
 
 class RibbonCableBlock : BaseWireBlock(Block.Settings.of(Material.STONE).noCollision().strength(0.25f, 0.25f), 1 / 16f) {
 
@@ -39,6 +38,6 @@ data class RibbonCablePartExt(override val side: Direction) : PartExt, WirePartE
   }
 
   override fun toTag(): Tag {
-    return ByteTag(side.id.toByte())
+    return ByteTag.of(side.id.toByte())
   }
 }

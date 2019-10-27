@@ -1,16 +1,16 @@
 package therealfarfetchd.retrocomputers.client.gui
 
-import com.mojang.blaze3d.platform.GLX
 import com.mojang.blaze3d.platform.GlStateManager
-import com.mojang.blaze3d.platform.TextureUtil
+import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.GlFramebuffer
-import net.minecraft.client.gui.Screen
+import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormats
-import net.minecraft.network.chat.TranslatableComponent
+import net.minecraft.client.texture.TextureUtil
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.Vec3d
 import org.lwjgl.BufferUtils
@@ -30,14 +30,14 @@ import kotlin.math.round
 
 private val buf = BufferUtils.createByteBuffer(16384)
 
-private val vbo = GLX.glGenBuffers()
+private val vbo = GL30.glGenBuffers()
 private val vao = GL30.glGenVertexArrays()
 private val screenTex = createTexture()
 private val charsetTex = createTexture()
 
 private const val scale = 8
 
-class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("block.retrocomputers.terminal")) {
+class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.retrocomputers.terminal")) {
 
   private var uCharset = 0
   private var uScreen = 0
@@ -47,8 +47,8 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
   private var fb: GlFramebuffer? = null
 
   override fun tick() {
-    val minecraft = minecraft!!
-    val dist = minecraft.player.getCameraPosVec(1f).squaredDistanceTo(Vec3d(te.pos).add(0.5, 0.5, 0.5))
+    val minecraft = minecraft ?: return
+    val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d(te.pos).add(0.5, 0.5, 0.5)) ?: Double.POSITIVE_INFINITY
     if (dist > 10 * 10) minecraft.openScreen(null)
   }
 
@@ -62,25 +62,25 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
     fb.setTexFilter(if ((mc.window.scaleFactor.toInt() % 2) == 0) GL11.GL_NEAREST else GL11.GL_LINEAR)
 
     fb.beginWrite(true)
-    GlStateManager.matrixMode(GL11.GL_PROJECTION)
-    GlStateManager.pushMatrix()
-    GlStateManager.loadIdentity()
-    GlStateManager.ortho(0.0, 1.0, 1.0, 0.0, -1.0, 1.0)
-    GlStateManager.matrixMode(GL11.GL_MODELVIEW)
-    GlStateManager.pushMatrix()
-    GlStateManager.loadIdentity()
+    RenderSystem.matrixMode(GL11.GL_PROJECTION)
+    RenderSystem.pushMatrix()
+    RenderSystem.loadIdentity()
+    RenderSystem.ortho(0.0, 1.0, 1.0, 0.0, -1.0, 1.0)
+    RenderSystem.matrixMode(GL11.GL_MODELVIEW)
+    RenderSystem.pushMatrix()
+    RenderSystem.loadIdentity()
 
-    GLX.glUseProgram(sh)
+    GL30.glUseProgram(sh)
     GL30.glBindVertexArray(vao)
-    GLX.glBindBuffer(GLX.GL_ARRAY_BUFFER, vbo)
+    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
 
     GL20.glEnableVertexAttribArray(aXyz)
     GL20.glEnableVertexAttribArray(aUv)
 
-    GlStateManager.activeTexture(GL13.GL_TEXTURE0)
-    GlStateManager.enableTexture()
-    GlStateManager.bindTexture(screenTex)
-    GLX.glUniform1i(uScreen, 0)
+    RenderSystem.activeTexture(GL13.GL_TEXTURE0)
+    RenderSystem.enableTexture()
+    RenderSystem.bindTexture(screenTex)
+    GL30.glUniform1i(uScreen, 0)
 
     buf.clear()
     buf.put(te.screen)
@@ -93,10 +93,10 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
     buf.rewind()
     GlStateManager.texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 80, 60, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
 
-    GlStateManager.activeTexture(GL13.GL_TEXTURE2)
-    GlStateManager.enableTexture()
-    GlStateManager.bindTexture(charsetTex)
-    GLX.glUniform1i(uCharset, 2)
+    RenderSystem.activeTexture(GL13.GL_TEXTURE2)
+    RenderSystem.enableTexture()
+    RenderSystem.bindTexture(charsetTex)
+    GL30.glUniform1i(uCharset, 2)
 
     buf.clear()
     buf.put(te.charset)
@@ -108,24 +108,24 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
     GL20.glDisableVertexAttribArray(aXyz)
     GL20.glDisableVertexAttribArray(aUv)
 
-    GLX.glBindBuffer(GLX.GL_ARRAY_BUFFER, 0)
+    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0)
     GL30.glBindVertexArray(0)
-    GLX.glUseProgram(0)
+    GL30.glUseProgram(0)
 
-    GlStateManager.bindTexture(0)
-    GlStateManager.disableTexture()
-    GlStateManager.activeTexture(GL13.GL_TEXTURE0)
-    GlStateManager.bindTexture(0)
+    RenderSystem.bindTexture(0)
+    RenderSystem.disableTexture()
+    RenderSystem.activeTexture(GL13.GL_TEXTURE0)
+    RenderSystem.bindTexture(0)
 
     mc.framebuffer.beginWrite(true)
     fb.beginRead()
 
-    GlStateManager.matrixMode(GL11.GL_PROJECTION)
-    GlStateManager.popMatrix()
-    GlStateManager.matrixMode(GL11.GL_MODELVIEW)
-    GlStateManager.popMatrix()
+    RenderSystem.matrixMode(GL11.GL_PROJECTION)
+    RenderSystem.popMatrix()
+    RenderSystem.matrixMode(GL11.GL_MODELVIEW)
+    RenderSystem.popMatrix()
 
-    GlStateManager.color4f(1f, 1f, 1f, 1f)
+    RenderSystem.color4f(1f, 1f, 1f, 1f)
 
     val swidth = 8 * 80 * 0.5
     val sheight = 8 * 50 * 0.5
@@ -135,10 +135,10 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
     val t = Tessellator.getInstance()
     val buf = t.bufferBuilder
     buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV)
-    buf.vertex(x1, y1, 0.0).texture(0, 1).next()
-    buf.vertex(x1, y1 + sheight, 0.0).texture(0, 0).next()
-    buf.vertex(x1 + swidth, y1 + sheight, 0.0).texture(1, 0).next()
-    buf.vertex(x1 + swidth, y1, 0.0).texture(1, 1).next()
+    buf.vertex(x1, y1, 0.0).texture(0f, 1f).next()
+    buf.vertex(x1, y1 + sheight, 0.0).texture(0f, 0f).next()
+    buf.vertex(x1 + swidth, y1 + sheight, 0.0).texture(1f, 0f).next()
+    buf.vertex(x1 + swidth, y1, 0.0).texture(1f, 1f).next()
     t.draw()
 
   }
@@ -193,15 +193,15 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
   private fun initDrawData() {
     val sh = Shaders.screen()
 
-    GLX.glUseProgram(sh)
+    GL30.glUseProgram(sh)
     GL30.glBindVertexArray(vao)
-    GLX.glBindBuffer(GLX.GL_ARRAY_BUFFER, vbo)
+    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
 
-    uCharset = GLX.glGetUniformLocation(sh, "charset")
-    uScreen = GLX.glGetUniformLocation(sh, "screen")
+    uCharset = GL30.glGetUniformLocation(sh, "charset")
+    uScreen = GL30.glGetUniformLocation(sh, "screen")
 
-    aXyz = GLX.glGetAttribLocation(sh, "xyz")
-    aUv = GLX.glGetAttribLocation(sh, "uv")
+    aXyz = GL30.glGetAttribLocation(sh, "xyz")
+    aUv = GL30.glGetAttribLocation(sh, "uv")
 
     GL20.glVertexAttribPointer(aXyz, 3, GL_FLOAT, false, 20, 0)
     GL20.glVertexAttribPointer(aUv, 2, GL_FLOAT, false, 20, 12)
@@ -220,11 +220,11 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
 
     buf.rewind()
 
-    GLX.glBufferData(GLX.GL_ARRAY_BUFFER, buf, GL15.GL_STATIC_DRAW)
+    GL30.glBufferData(GL30.GL_ARRAY_BUFFER, buf, GL15.GL_STATIC_DRAW)
 
-    GLX.glBindBuffer(GLX.GL_ARRAY_BUFFER, 0)
+    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0)
     GL30.glBindVertexArray(0)
-    GLX.glUseProgram(0)
+    GL30.glUseProgram(0)
   }
 
   private fun initFb() {
@@ -245,11 +245,11 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableComponent("blo
 
 private fun createTexture(): Int {
   val tex = TextureUtil.generateTextureId()
-  GlStateManager.bindTexture(tex)
-  GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
-  GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
-  GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
-  GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
-  GlStateManager.bindTexture(0)
+  RenderSystem.bindTexture(tex)
+  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
+  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
+  RenderSystem.bindTexture(0)
   return tex
 }
