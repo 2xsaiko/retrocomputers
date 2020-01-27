@@ -8,19 +8,20 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
-import therealfarfetchd.hctm.common.block.BaseWireBlock
 import therealfarfetchd.hctm.common.block.BaseWireBlockEntity
+import therealfarfetchd.hctm.common.block.SingleBaseWireBlock
 import therealfarfetchd.hctm.common.block.WireUtils
-import therealfarfetchd.hctm.common.wire.ConnectionHandlers
-import therealfarfetchd.hctm.common.wire.Constraints
+import therealfarfetchd.hctm.common.wire.ConnectionDiscoverers
+import therealfarfetchd.hctm.common.wire.ConnectionFilter
 import therealfarfetchd.hctm.common.wire.NetNode
 import therealfarfetchd.hctm.common.wire.NodeView
 import therealfarfetchd.hctm.common.wire.PartExt
 import therealfarfetchd.hctm.common.wire.WirePartExtType
+import therealfarfetchd.hctm.common.wire.find
 import therealfarfetchd.retrocomputers.common.block.wire.PartIoCarrier
 import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
 
-class RibbonCableBlock : BaseWireBlock(Block.Settings.of(Material.STONE).noCollision().strength(0.25f, 0.25f), 1 / 16f) {
+class RibbonCableBlock : SingleBaseWireBlock(Block.Settings.of(Material.STONE).noCollision().strength(0.25f, 0.25f), 1 / 16f) {
 
   override fun createPartExtFromSide(side: Direction) = RibbonCablePartExt(side)
 
@@ -30,7 +31,7 @@ class RibbonCableBlock : BaseWireBlock(Block.Settings.of(Material.STONE).noColli
 
 data class RibbonCablePartExt(override val side: Direction) : PartExt, WirePartExtType, PartIoCarrier {
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return ConnectionHandlers.Wire.tryConnect(self, world, pos, nv, Constraints(PartIoCarrier::class))
+    return find(ConnectionDiscoverers.FullBlock, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
   }
 
   override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {

@@ -23,12 +23,13 @@ import net.minecraft.util.math.Direction.NORTH
 import net.minecraft.world.IWorld
 import net.minecraft.world.World
 import therealfarfetchd.hctm.common.wire.BlockPartProvider
-import therealfarfetchd.hctm.common.wire.ConnectionHandlers
-import therealfarfetchd.hctm.common.wire.Constraints
+import therealfarfetchd.hctm.common.wire.ConnectionDiscoverers
+import therealfarfetchd.hctm.common.wire.ConnectionFilter
 import therealfarfetchd.hctm.common.wire.FullBlockPartExtType
 import therealfarfetchd.hctm.common.wire.NetNode
 import therealfarfetchd.hctm.common.wire.NodeView
 import therealfarfetchd.hctm.common.wire.PartExt
+import therealfarfetchd.hctm.common.wire.find
 import therealfarfetchd.hctm.common.wire.getWireNetworkState
 import therealfarfetchd.retrocomputers.common.block.wire.PartIoCarrier
 import therealfarfetchd.retrocomputers.common.block.wire.PartIoProvider
@@ -36,7 +37,7 @@ import therealfarfetchd.retrocomputers.common.block.wire.PartIoProvider
 abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), BlockPartProvider {
 
   init {
-    this.defaultState = this.stateFactory.defaultState.with(Direction, NORTH)
+    this.defaultState = this.defaultState.with(Direction, NORTH)
   }
 
   override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
@@ -77,7 +78,7 @@ abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), B
 object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return ConnectionHandlers.FullBlock.tryConnect(self, world, pos, nv, Constraints(PartIoCarrier::class))
+    return find(ConnectionDiscoverers.FullBlock, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
   }
 
   override fun toTag(): Tag = ByteTag.of(0)

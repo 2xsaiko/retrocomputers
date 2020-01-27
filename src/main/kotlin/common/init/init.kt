@@ -48,14 +48,14 @@ object BlockEntityTypes {
   val RibbonCable = create(::BaseWireBlockEntity, "ribbon_cable", Blocks.RibbonCable)
 
   private fun <T : BlockEntity> create(builder: () -> T, name: String, vararg blocks: Block): BlockEntityType<T> {
-    return Registry.register(Registry.BLOCK_ENTITY, Identifier(ModID, name), BlockEntityType.Builder.create(Supplier(builder), *blocks).build(null))
+    return Registry.register(Registry.BLOCK_ENTITY_TYPE, Identifier(ModID, name), BlockEntityType.Builder.create(Supplier(builder), *blocks).build(null))
   }
 
   private fun <T : BlockEntity> create(builder: (BlockEntityType<T>) -> T, name: String, vararg blocks: Block): BlockEntityType<T> {
     var type: BlockEntityType<T>? = null
     val s = Supplier { builder(type!!) }
     type = BlockEntityType.Builder.create(s, *blocks).build(null)
-    return Registry.register(Registry.BLOCK_ENTITY, Identifier(ModID, name), type)
+    return Registry.register(Registry.BLOCK_ENTITY_TYPE, Identifier(ModID, name), type)
   }
 
 }

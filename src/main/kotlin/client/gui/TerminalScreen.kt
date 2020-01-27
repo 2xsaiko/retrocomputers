@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.GlFramebuffer
+import net.minecraft.client.gl.Framebuffer
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormats
@@ -44,7 +44,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   private var aXyz = 0
   private var aUv = 0
 
-  private var fb: GlFramebuffer? = null
+  private var fb: Framebuffer? = null
 
   override fun tick() {
     val minecraft = minecraft ?: return
@@ -133,8 +133,8 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     val y1 = round(height / 2.0 - sheight / 2.0)
 
     val t = Tessellator.getInstance()
-    val buf = t.bufferBuilder
-    buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV)
+    val buf = t.buffer
+    buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE)
     buf.vertex(x1, y1, 0.0).texture(0f, 1f).next()
     buf.vertex(x1, y1 + sheight, 0.0).texture(0f, 0f).next()
     buf.vertex(x1 + swidth, y1 + sheight, 0.0).texture(1f, 0f).next()
@@ -230,7 +230,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   private fun initFb() {
     fb?.delete()
     val scale = 4
-    fb = GlFramebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
+    fb = Framebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
   }
 
   override fun removed() {
