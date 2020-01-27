@@ -31,7 +31,7 @@ class RibbonCableBlock : SingleBaseWireBlock(Block.Settings.of(Material.STONE).n
 
 data class RibbonCablePartExt(override val side: Direction) : PartExt, WirePartExtType, PartIoCarrier {
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return find(ConnectionDiscoverers.FullBlock, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
+    return find(ConnectionDiscoverers.Wire, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
   }
 
   override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
