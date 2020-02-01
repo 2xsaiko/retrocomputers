@@ -1,0 +1,11 @@
+block.retrocomputers.computer: Computer
+block.retrocomputers.terminal: Terminal
+block.retrocomputers.disk_drive: Disk Drive
+block.retrocomputers.redstone_port: Redstone Port
+block.retrocomputers.redstone_port_analog: Analog Redstone Port
+block.retrocomputers.radio: Wireless Transceiver
+block.retrocomputers.backplane: Backplane
+block.retrocomputers.memory: 8K RAM Module
+block.retrocomputers.ribbon_cable: Ribbon Cable
+block.retrocomputers.sortron: Sortron
+block.retrocomputers.retinal_scanner: Retinal Scanner

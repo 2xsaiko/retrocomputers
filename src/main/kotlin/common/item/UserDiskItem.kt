@@ -48,7 +48,7 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
     private val raf = RandomAccessFile(path.toFile(), "rw")
 
-    private val csum = Arrays.hashCode(data)
+    private val csum = data.contentHashCode()
 
     init {
       if (raf.length() >= (sector + 1) * 128) {

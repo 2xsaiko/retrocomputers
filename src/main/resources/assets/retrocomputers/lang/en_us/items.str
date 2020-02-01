@@ -1,0 +1,10 @@
+item.retrocomputers.user_disk: Floppy Disk
+item.retrocomputers.screwdriver: Screwdriver
+
+item.retrocomputers.disk_minforth: Minimal FORTH Boot Disk
+item.retrocomputers.disk_forth: FORTH Boot Disk
+item.retrocomputers.disk_extforth: Extended FORTH Boot Disk
+item.retrocomputers.disk_decompiler: FORTH Decompiler
+item.retrocomputers.disk_radio: Transceiver Programs
+item.retrocomputers.disk_sortron: Sortron Programs
+item.retrocomputers.disk_retinal: Retinal Scanner Programs
