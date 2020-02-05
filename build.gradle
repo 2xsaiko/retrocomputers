@@ -1,9 +1,4 @@
-plugins {
-    id 'org.jetbrains.kotlin.jvm'
-}
-
-archivesBaseName = 'retrocomputers'
+version = retrocomputers_version
 
 dependencies {
-    compile project(':hctm-base')
 }
