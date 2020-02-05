@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "retrocomputers",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "name": "RetroComputers",
   "description": "Programmable persistent computers.",
   "authors": ["2xsaiko"],
@@ -16,7 +16,7 @@
     "main": [{ "value": "net.dblsaiko.retrocomputers.RetroComputers", "adapter": "kotlin" }],
     "client": [{ "value": "net.dblsaiko.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
   },
-  "requires": {
+  "depends": {
     "fabricloader": ">=0.4.0",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.3.30",
