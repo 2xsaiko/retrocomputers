@@ -1,9 +1,9 @@
-package therealfarfetchd.retrocomputers.common.packet.server
+package net.dblsaiko.retrocomputers.common.packet.server
 
+import net.dblsaiko.retrocomputers.common.block.TerminalEntity
 import net.fabricmc.fabric.api.network.PacketContext
 import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.Vec3d
-import therealfarfetchd.retrocomputers.common.block.TerminalEntity
 
 fun onKeyTypedTerminal(context: PacketContext, buffer: PacketByteBuf) {
   val player = context.player

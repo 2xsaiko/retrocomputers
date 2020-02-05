@@ -1,5 +1,16 @@
-package therealfarfetchd.retrocomputers.common.block
+package net.dblsaiko.retrocomputers.common.block
 
+import net.dblsaiko.hctm.common.wire.BlockPartProvider
+import net.dblsaiko.hctm.common.wire.ConnectionDiscoverers
+import net.dblsaiko.hctm.common.wire.ConnectionFilter
+import net.dblsaiko.hctm.common.wire.FullBlockPartExtType
+import net.dblsaiko.hctm.common.wire.NetNode
+import net.dblsaiko.hctm.common.wire.NodeView
+import net.dblsaiko.hctm.common.wire.PartExt
+import net.dblsaiko.hctm.common.wire.find
+import net.dblsaiko.hctm.common.wire.getWireNetworkState
+import net.dblsaiko.retrocomputers.common.block.wire.PartIoCarrier
+import net.dblsaiko.retrocomputers.common.block.wire.PartIoProvider
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType.MODEL
@@ -22,17 +33,6 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.NORTH
 import net.minecraft.world.IWorld
 import net.minecraft.world.World
-import therealfarfetchd.hctm.common.wire.BlockPartProvider
-import therealfarfetchd.hctm.common.wire.ConnectionDiscoverers
-import therealfarfetchd.hctm.common.wire.ConnectionFilter
-import therealfarfetchd.hctm.common.wire.FullBlockPartExtType
-import therealfarfetchd.hctm.common.wire.NetNode
-import therealfarfetchd.hctm.common.wire.NodeView
-import therealfarfetchd.hctm.common.wire.PartExt
-import therealfarfetchd.hctm.common.wire.find
-import therealfarfetchd.hctm.common.wire.getWireNetworkState
-import therealfarfetchd.retrocomputers.common.block.wire.PartIoCarrier
-import therealfarfetchd.retrocomputers.common.block.wire.PartIoProvider
 
 abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), BlockPartProvider {
 

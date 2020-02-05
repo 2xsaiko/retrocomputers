@@ -1,5 +1,9 @@
-package therealfarfetchd.retrocomputers.common.block
+package net.dblsaiko.retrocomputers.common.block
 
+import net.dblsaiko.retrocomputers.RetroComputers
+import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
+import net.dblsaiko.retrocomputers.common.init.Resources
+import net.dblsaiko.retrocomputers.common.util.unsigned
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
@@ -12,10 +16,6 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import therealfarfetchd.retrocomputers.RetroComputers
-import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
-import therealfarfetchd.retrocomputers.common.init.Resources
-import therealfarfetchd.retrocomputers.common.util.unsigned
 import kotlin.experimental.xor
 
 class TerminalBlock : BaseBlock() {

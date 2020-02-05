@@ -1,8 +1,8 @@
-package therealfarfetchd.retrocomputers.common
+package net.dblsaiko.retrocomputers.common
 
+import net.dblsaiko.retrocomputers.client.gui.TerminalScreen
+import net.dblsaiko.retrocomputers.common.block.TerminalEntity
 import net.minecraft.client.MinecraftClient
-import therealfarfetchd.retrocomputers.client.gui.TerminalScreen
-import therealfarfetchd.retrocomputers.common.block.TerminalEntity
 
 interface Proxy {
 

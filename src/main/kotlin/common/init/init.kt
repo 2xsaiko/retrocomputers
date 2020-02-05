@@ -1,5 +1,18 @@
-package therealfarfetchd.retrocomputers.common.init
+package net.dblsaiko.retrocomputers.common.init
 
+import net.dblsaiko.hctm.common.block.BaseWireBlockEntity
+import net.dblsaiko.hctm.common.block.BaseWireItem
+import net.dblsaiko.retrocomputers.ModID
+import net.dblsaiko.retrocomputers.common.block.ComputerBlock
+import net.dblsaiko.retrocomputers.common.block.ComputerEntity
+import net.dblsaiko.retrocomputers.common.block.DiskDriveBlock
+import net.dblsaiko.retrocomputers.common.block.DiskDriveEntity
+import net.dblsaiko.retrocomputers.common.block.RibbonCableBlock
+import net.dblsaiko.retrocomputers.common.block.TerminalBlock
+import net.dblsaiko.retrocomputers.common.block.TerminalEntity
+import net.dblsaiko.retrocomputers.common.item.ImageDiskItem
+import net.dblsaiko.retrocomputers.common.item.UserDiskItem
+import net.dblsaiko.retrocomputers.common.packet.server.onKeyTypedTerminal
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.minecraft.block.Block
 import net.minecraft.block.entity.BlockEntity
@@ -10,19 +23,6 @@ import net.minecraft.item.Item.Settings
 import net.minecraft.item.ItemGroup
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import therealfarfetchd.hctm.common.block.BaseWireBlockEntity
-import therealfarfetchd.hctm.common.block.BaseWireItem
-import therealfarfetchd.retrocomputers.ModID
-import therealfarfetchd.retrocomputers.common.block.ComputerBlock
-import therealfarfetchd.retrocomputers.common.block.ComputerEntity
-import therealfarfetchd.retrocomputers.common.block.DiskDriveBlock
-import therealfarfetchd.retrocomputers.common.block.DiskDriveEntity
-import therealfarfetchd.retrocomputers.common.block.RibbonCableBlock
-import therealfarfetchd.retrocomputers.common.block.TerminalBlock
-import therealfarfetchd.retrocomputers.common.block.TerminalEntity
-import therealfarfetchd.retrocomputers.common.item.ImageDiskItem
-import therealfarfetchd.retrocomputers.common.item.UserDiskItem
-import therealfarfetchd.retrocomputers.common.packet.server.onKeyTypedTerminal
 import java.util.function.Supplier
 
 object Blocks {

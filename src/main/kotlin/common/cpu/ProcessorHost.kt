@@ -1,6 +1,6 @@
-package therealfarfetchd.retrocomputers.common.cpu
+package net.dblsaiko.retrocomputers.common.cpu
 
-import therealfarfetchd.retrocomputers.common.block.wire.Device
+import net.dblsaiko.retrocomputers.common.block.wire.Device
 
 interface ProcessorHost {
   var targetBus: Byte

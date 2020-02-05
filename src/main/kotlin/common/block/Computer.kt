@@ -1,5 +1,11 @@
-package therealfarfetchd.retrocomputers.common.block
+package net.dblsaiko.retrocomputers.common.block
 
+import net.dblsaiko.retrocomputers.common.block.wire.Device
+import net.dblsaiko.retrocomputers.common.block.wire.accessIoNet
+import net.dblsaiko.retrocomputers.common.cpu.Processor
+import net.dblsaiko.retrocomputers.common.cpu.ProcessorHost
+import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
+import net.dblsaiko.retrocomputers.common.util.unsigned
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
@@ -11,12 +17,6 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import therealfarfetchd.retrocomputers.common.block.wire.Device
-import therealfarfetchd.retrocomputers.common.block.wire.accessIoNet
-import therealfarfetchd.retrocomputers.common.cpu.Processor
-import therealfarfetchd.retrocomputers.common.cpu.ProcessorHost
-import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
-import therealfarfetchd.retrocomputers.common.util.unsigned
 
 class ComputerBlock : BaseBlock() {
 

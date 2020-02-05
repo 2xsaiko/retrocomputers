@@ -1,5 +1,6 @@
-package therealfarfetchd.retrocomputers.common.init
+package net.dblsaiko.retrocomputers.common.init
 
+import net.dblsaiko.retrocomputers.ModID
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resource.ResourceManager
@@ -7,7 +8,6 @@ import net.minecraft.resource.ResourceReloadListener.Synchronizer
 import net.minecraft.resource.ResourceType.SERVER_DATA
 import net.minecraft.util.Identifier
 import net.minecraft.util.profiler.Profiler
-import therealfarfetchd.retrocomputers.ModID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 

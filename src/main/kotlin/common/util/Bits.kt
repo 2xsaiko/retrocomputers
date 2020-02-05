@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package therealfarfetchd.retrocomputers.common.util
+package net.dblsaiko.retrocomputers.common.util
 
 import kotlin.experimental.and
 import kotlin.experimental.or

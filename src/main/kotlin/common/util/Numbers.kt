@@ -1,4 +1,4 @@
-package therealfarfetchd.retrocomputers.common.util
+package net.dblsaiko.retrocomputers.common.util
 
 val Byte.unsigned: Int
   get() = this.toInt() and 0xFF

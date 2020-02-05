@@ -1,12 +1,12 @@
-package therealfarfetchd.retrocomputers.common.block.wire
+package net.dblsaiko.retrocomputers.common.block.wire
 
+import net.dblsaiko.hctm.common.util.ifIsType
+import net.dblsaiko.hctm.common.wire.Network
+import net.dblsaiko.hctm.common.wire.PartExt
+import net.dblsaiko.hctm.common.wire.getWireNetworkState
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import therealfarfetchd.hctm.common.util.ifIsType
-import therealfarfetchd.hctm.common.wire.Network
-import therealfarfetchd.hctm.common.wire.PartExt
-import therealfarfetchd.hctm.common.wire.getWireNetworkState
 import kotlin.experimental.or
 
 /**

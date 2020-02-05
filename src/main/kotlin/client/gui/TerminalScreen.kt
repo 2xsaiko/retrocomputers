@@ -1,8 +1,11 @@
-package therealfarfetchd.retrocomputers.client.gui
+package net.dblsaiko.retrocomputers.client.gui
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.buffer.Unpooled
+import net.dblsaiko.retrocomputers.client.init.Shaders
+import net.dblsaiko.retrocomputers.common.block.TerminalEntity
+import net.dblsaiko.retrocomputers.common.init.Packets
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.Framebuffer
@@ -22,9 +25,6 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
-import therealfarfetchd.retrocomputers.client.init.Shaders
-import therealfarfetchd.retrocomputers.common.block.TerminalEntity
-import therealfarfetchd.retrocomputers.common.init.Packets
 import kotlin.experimental.xor
 import kotlin.math.round
 

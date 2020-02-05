@@ -1,14 +1,14 @@
-package therealfarfetchd.retrocomputers.client
+package net.dblsaiko.retrocomputers.client
 
+import net.dblsaiko.hctm.client.render.model.UnbakedWireModel
+import net.dblsaiko.retrocomputers.ModID
+import net.dblsaiko.retrocomputers.client.init.Shaders
+import net.dblsaiko.retrocomputers.common.init.Blocks
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import therealfarfetchd.hctm.client.render.model.UnbakedWireModel
-import therealfarfetchd.retrocomputers.ModID
-import therealfarfetchd.retrocomputers.client.init.Shaders
-import therealfarfetchd.retrocomputers.common.init.Blocks
 
 object RetroComputersClient : ClientModInitializer {
 

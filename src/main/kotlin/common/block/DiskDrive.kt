@@ -1,5 +1,10 @@
-package therealfarfetchd.retrocomputers.common.block
+package net.dblsaiko.retrocomputers.common.block
 
+import net.dblsaiko.hctm.common.util.ext.makeStack
+import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
+import net.dblsaiko.retrocomputers.common.item.ext.ItemDisk
+import net.dblsaiko.retrocomputers.common.util.shr
+import net.dblsaiko.retrocomputers.common.util.unsigned
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.ItemEntity
@@ -22,11 +27,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import therealfarfetchd.hctm.common.util.ext.makeStack
-import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
-import therealfarfetchd.retrocomputers.common.item.ext.ItemDisk
-import therealfarfetchd.retrocomputers.common.util.shr
-import therealfarfetchd.retrocomputers.common.util.unsigned
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.math.min

@@ -1,11 +1,11 @@
-package therealfarfetchd.retrocomputers.common.item
+package net.dblsaiko.retrocomputers.common.item
 
+import net.dblsaiko.retrocomputers.common.init.Resources
+import net.dblsaiko.retrocomputers.common.item.ext.ItemDisk
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
-import therealfarfetchd.retrocomputers.common.init.Resources
-import therealfarfetchd.retrocomputers.common.item.ext.ItemDisk
 import java.util.*
 
 class ImageDiskItem(val image: Identifier) : Item(Item.Settings().maxCount(1)), ItemDisk {

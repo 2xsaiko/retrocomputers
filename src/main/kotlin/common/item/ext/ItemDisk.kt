@@ -1,4 +1,4 @@
-package therealfarfetchd.retrocomputers.common.item.ext
+package net.dblsaiko.retrocomputers.common.item.ext
 
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld

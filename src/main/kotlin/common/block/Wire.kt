@@ -1,5 +1,17 @@
-package therealfarfetchd.retrocomputers.common.block
+package net.dblsaiko.retrocomputers.common.block
 
+import net.dblsaiko.hctm.common.block.BaseWireBlockEntity
+import net.dblsaiko.hctm.common.block.SingleBaseWireBlock
+import net.dblsaiko.hctm.common.block.WireUtils
+import net.dblsaiko.hctm.common.wire.ConnectionDiscoverers
+import net.dblsaiko.hctm.common.wire.ConnectionFilter
+import net.dblsaiko.hctm.common.wire.NetNode
+import net.dblsaiko.hctm.common.wire.NodeView
+import net.dblsaiko.hctm.common.wire.PartExt
+import net.dblsaiko.hctm.common.wire.WirePartExtType
+import net.dblsaiko.hctm.common.wire.find
+import net.dblsaiko.retrocomputers.common.block.wire.PartIoCarrier
+import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.minecraft.block.Block
 import net.minecraft.block.Material
 import net.minecraft.nbt.ByteTag
@@ -8,18 +20,6 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
-import therealfarfetchd.hctm.common.block.BaseWireBlockEntity
-import therealfarfetchd.hctm.common.block.SingleBaseWireBlock
-import therealfarfetchd.hctm.common.block.WireUtils
-import therealfarfetchd.hctm.common.wire.ConnectionDiscoverers
-import therealfarfetchd.hctm.common.wire.ConnectionFilter
-import therealfarfetchd.hctm.common.wire.NetNode
-import therealfarfetchd.hctm.common.wire.NodeView
-import therealfarfetchd.hctm.common.wire.PartExt
-import therealfarfetchd.hctm.common.wire.WirePartExtType
-import therealfarfetchd.hctm.common.wire.find
-import therealfarfetchd.retrocomputers.common.block.wire.PartIoCarrier
-import therealfarfetchd.retrocomputers.common.init.BlockEntityTypes
 
 class RibbonCableBlock : SingleBaseWireBlock(Block.Settings.of(Material.STONE).noCollision().strength(0.25f, 0.25f), 1 / 16f) {
 

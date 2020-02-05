@@ -13,8 +13,8 @@
   "icon": "assets/retrocomputers/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [{ "value": "therealfarfetchd.retrocomputers.RetroComputers", "adapter": "kotlin" }],
-    "client": [{ "value": "therealfarfetchd.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
+    "main": [{ "value": "net.dblsaiko.retrocomputers.RetroComputers", "adapter": "kotlin" }],
+    "client": [{ "value": "net.dblsaiko.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
   },
   "requires": {
     "fabricloader": ">=0.4.0",

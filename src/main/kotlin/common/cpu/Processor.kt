@@ -1,11 +1,11 @@
-package therealfarfetchd.retrocomputers.common.cpu
+package net.dblsaiko.retrocomputers.common.cpu
 
+import net.dblsaiko.retrocomputers.common.init.Resources
+import net.dblsaiko.retrocomputers.common.util.packByte
+import net.dblsaiko.retrocomputers.common.util.packShort
+import net.dblsaiko.retrocomputers.common.util.unpack
+import net.dblsaiko.retrocomputers.common.util.unsigned
 import net.minecraft.nbt.CompoundTag
-import therealfarfetchd.retrocomputers.common.init.Resources
-import therealfarfetchd.retrocomputers.common.util.packByte
-import therealfarfetchd.retrocomputers.common.util.packShort
-import therealfarfetchd.retrocomputers.common.util.unpack
-import therealfarfetchd.retrocomputers.common.util.unsigned
 import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
