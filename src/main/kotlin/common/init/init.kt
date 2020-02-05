@@ -66,7 +66,7 @@ object Items {
   val Terminal = create(Blocks.Terminal, "terminal")
   val DiskDrive = create(Blocks.DiskDrive, "disk_drive")
 
-  val RibbonCable = create(BaseWireItem(Blocks.RibbonCable), "ribbon_cable")
+  val RibbonCable = create(BaseWireItem(Blocks.RibbonCable, Item.Settings()), "ribbon_cable")
 
   val SysDisks = listOf(
     "forth",
