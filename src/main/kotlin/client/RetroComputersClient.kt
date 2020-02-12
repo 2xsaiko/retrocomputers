@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import java.util.concurrent.ConcurrentHashMap
 
 object RetroComputersClient : ClientModInitializer {
 
@@ -16,7 +17,7 @@ object RetroComputersClient : ClientModInitializer {
     Shaders
 
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
-      val model = UnbakedWireModel(Identifier(ModID, "block/ribbon_cable"), 0.5f, 0.0625f, 32.0f)
+      val model = UnbakedWireModel(Identifier(ModID, "block/ribbon_cable"), 0.5f, 0.0625f, 32.0f, ConcurrentHashMap())
       ModelVariantProvider { modelId, _ -> model.takeIf { Identifier(modelId.namespace, modelId.path) == Registry.BLOCK.getId(Blocks.RibbonCable) } }
     }
   }
