@@ -31,7 +31,7 @@ class TerminalBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 
 }
 
-class TerminalEntity : BaseBlockEntity(BlockEntityTypes.Terminal), Tickable {
+class TerminalEntity : BaseBlockEntity(BlockEntityTypes.TERMINAL), Tickable {
 
   override var busId: Byte = 1
 

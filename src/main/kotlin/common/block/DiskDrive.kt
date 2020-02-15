@@ -35,7 +35,7 @@ import kotlin.math.min
 class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 
   init {
-    defaultState = defaultState.with(DiskDriveProperties.HasDisk, false)
+    defaultState = defaultState.with(DiskDriveProperties.HAS_DISK, false)
   }
 
   override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
@@ -53,7 +53,7 @@ class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 
   override fun appendProperties(b: Builder<Block, BlockState>) {
     super.appendProperties(b)
-    b.add(DiskDriveProperties.HasDisk)
+    b.add(DiskDriveProperties.HAS_DISK)
   }
 
   override fun createBlockEntity(view: BlockView) = DiskDriveEntity()
@@ -61,10 +61,10 @@ class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 }
 
 object DiskDriveProperties {
-  val HasDisk = BooleanProperty.of("has_disk")
+  val HAS_DISK = BooleanProperty.of("has_disk")
 }
 
-class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {
+class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DISK_DRIVE), Tickable {
 
   override var busId: Byte = 2
 
@@ -147,13 +147,13 @@ class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {
     if (world.isClient) return true
 
     if (!breakBlock) {
-      val dirVec = Vec3d.method_24954(cachedState[BaseBlock.Direction].vector)
+      val dirVec = Vec3d.method_24954(cachedState[BaseBlock.DIRECTION].vector)
       val pos = Vec3d.method_24953(pos)
         .add(dirVec.multiply(0.75))
       val item = ItemEntity(world, pos.x, pos.y, pos.z, stack)
       item.velocity = dirVec.multiply(0.1)
       world.spawnEntity(item)
-      world.setBlockState(getPos(), cachedState.with(DiskDriveProperties.HasDisk, false))
+      world.setBlockState(getPos(), cachedState.with(DiskDriveProperties.HAS_DISK, false))
     } else {
       ItemScatterer.spawn(world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), stack)
     }
@@ -164,7 +164,7 @@ class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {
   }
 
   private fun hasDisk(): Boolean {
-    return if ((getWorld() ?: return false).isClient) cachedState[DiskDriveProperties.HasDisk] else !stack.isEmpty
+    return if ((getWorld() ?: return false).isClient) cachedState[DiskDriveProperties.HAS_DISK] else !stack.isEmpty
   }
 
   fun insertDisk(stack: ItemStack): Boolean {
@@ -172,7 +172,7 @@ class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {
     if (stack.isEmpty || stack.item !is ItemDisk) return false
 
     this.stack = stack.split(1)
-    world.setBlockState(getPos(), cachedState.with(DiskDriveProperties.HasDisk, true))
+    world.setBlockState(getPos(), cachedState.with(DiskDriveProperties.HAS_DISK, true))
 
     return true
   }

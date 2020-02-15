@@ -37,23 +37,23 @@ import net.minecraft.world.World
 abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(settings), BlockPartProvider {
 
   init {
-    this.defaultState = this.defaultState.with(Direction, NORTH)
+    this.defaultState = this.defaultState.with(DIRECTION, NORTH)
   }
 
   override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-    return this.defaultState.with(Direction, ctx.playerFacing.opposite)
+    return this.defaultState.with(DIRECTION, ctx.playerFacing.opposite)
   }
 
   override fun getRenderType(p0: BlockState?) = MODEL
 
   override fun rotate(state: BlockState, rotation: BlockRotation): BlockState =
-    state.with(Direction, rotation.rotate(state.get<Direction>(Direction) as Direction))
+    state.with(DIRECTION, rotation.rotate(state.get<Direction>(DIRECTION) as Direction))
 
   override fun mirror(state: BlockState, mirror: BlockMirror): BlockState =
-    state.rotate(mirror.getRotation(state.get<Direction>(Direction) as Direction))
+    state.rotate(mirror.getRotation(state.get<Direction>(DIRECTION) as Direction))
 
   override fun appendProperties(b: Builder<Block, BlockState>) {
-    b.add(Direction)
+    b.add(DIRECTION)
   }
 
   override fun prepare(state: BlockState, world: IWorld, pos: BlockPos, flags: Int) {
@@ -70,7 +70,7 @@ abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(set
   }
 
   companion object {
-    val Direction = HorizontalFacingBlock.FACING
+    val DIRECTION = HorizontalFacingBlock.FACING
   }
 
 }
@@ -78,7 +78,7 @@ abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(set
 object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return find(ConnectionDiscoverers.FullBlock, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
+    return find(ConnectionDiscoverers.FULL_BLOCK, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
   }
 
   override fun toTag(): Tag = ByteTag.of(0)

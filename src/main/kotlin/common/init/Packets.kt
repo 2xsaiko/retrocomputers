@@ -1,6 +1,6 @@
 package net.dblsaiko.retrocomputers.common.init
 
-import net.dblsaiko.retrocomputers.ModID
+import net.dblsaiko.retrocomputers.MOD_ID
 import net.dblsaiko.retrocomputers.common.packet.server.onKeyTypedTerminal
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.minecraft.util.Identifier
@@ -11,11 +11,11 @@ object Packets {
   }
 
   object Server {
-    val TerminalKeyTyped = Identifier(ModID, "terminal_key")
+    val TERMINAL_KEY_TYPED = Identifier(MOD_ID, "terminal_key")
   }
 
   fun register() {
-    ServerSidePacketRegistry.INSTANCE.register(Server.TerminalKeyTyped, ::onKeyTypedTerminal)
+    ServerSidePacketRegistry.INSTANCE.register(Server.TERMINAL_KEY_TYPED, ::onKeyTypedTerminal)
   }
 
 }

@@ -1,7 +1,7 @@
 package net.dblsaiko.retrocomputers.client
 
 import net.dblsaiko.hctm.client.render.model.UnbakedWireModel
-import net.dblsaiko.retrocomputers.ModID
+import net.dblsaiko.retrocomputers.MOD_ID
 import net.dblsaiko.retrocomputers.client.init.Shaders
 import net.dblsaiko.retrocomputers.common.init.Blocks
 import net.fabricmc.api.ClientModInitializer
@@ -17,8 +17,8 @@ object RetroComputersClient : ClientModInitializer {
     Shaders
 
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
-      val model = UnbakedWireModel(Identifier(ModID, "block/ribbon_cable"), 0.5f, 0.0625f, 32.0f, ConcurrentHashMap())
-      ModelVariantProvider { modelId, _ -> model.takeIf { Identifier(modelId.namespace, modelId.path) == Registry.BLOCK.getId(Blocks.RibbonCable) } }
+      val model = UnbakedWireModel(Identifier(MOD_ID, "block/ribbon_cable"), 0.5f, 0.0625f, 32.0f, ConcurrentHashMap())
+      ModelVariantProvider { modelId, _ -> model.takeIf { Identifier(modelId.namespace, modelId.path) == Registry.BLOCK.getId(Blocks.RIBBON_CABLE) } }
     }
   }
 

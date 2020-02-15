@@ -177,7 +177,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     val buffer = PacketByteBuf(Unpooled.buffer())
     buffer.writeBlockPos(te.pos)
     buffer.writeByte(c.toInt())
-    ClientSidePacketRegistry.INSTANCE.sendToServer(Packets.Server.TerminalKeyTyped, buffer)
+    ClientSidePacketRegistry.INSTANCE.sendToServer(Packets.Server.TERMINAL_KEY_TYPED, buffer)
   }
 
   override fun init() {

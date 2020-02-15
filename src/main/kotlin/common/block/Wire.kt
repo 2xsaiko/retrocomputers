@@ -24,13 +24,13 @@ class RibbonCableBlock(settings: AbstractBlock.Settings) : SingleBaseWireBlock(s
 
   override fun createPartExtFromSide(side: Direction) = RibbonCablePartExt(side)
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.RibbonCable)
+  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.RIBBON_CABLE)
 
 }
 
 data class RibbonCablePartExt(override val side: Direction) : PartExt, WirePartExtType, PartIoCarrier {
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return find(ConnectionDiscoverers.Wire, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
+    return find(ConnectionDiscoverers.WIRE, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
   }
 
   override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {

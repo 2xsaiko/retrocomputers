@@ -25,7 +25,7 @@ class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings),
   }
 
   override fun canBundledConnectTo(state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction): Boolean {
-    return state[Direction] == side && edge == DOWN
+    return state[DIRECTION] == side && edge == DOWN
   }
 
   override fun getBundledOutput(state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction): UShort {
@@ -38,16 +38,16 @@ class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings),
   }
 
   override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-    return Box
+    return BOX
   }
 
   companion object {
-    val Box = VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 0.5, 1.0)
+    val BOX = VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 0.5, 1.0)
   }
 
 }
 
-class RedstonePortEntity : BaseBlockEntity(BlockEntityTypes.RedstonePort) {
+class RedstonePortEntity : BaseBlockEntity(BlockEntityTypes.REDSTONE_PORT) {
 
   override var busId: Byte = 3
 

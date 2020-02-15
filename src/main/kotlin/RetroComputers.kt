@@ -13,7 +13,7 @@ import net.fabricmc.api.EnvType.SERVER
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
 
-const val ModID = "retrocomputers"
+const val MOD_ID = "retrocomputers"
 
 object RetroComputers : ModInitializer {
 
@@ -30,7 +30,6 @@ object RetroComputers : ModInitializer {
     Items.register()
     Packets.register()
     Resources.register()
-
   }
 
 }

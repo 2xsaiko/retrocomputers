@@ -1,6 +1,6 @@
 package net.dblsaiko.retrocomputers.client.init
 
-import net.dblsaiko.retrocomputers.ModID
+import net.dblsaiko.retrocomputers.MOD_ID
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resource.ResourceManager
@@ -30,14 +30,14 @@ object Shaders {
         }, executor1).thenCompose<Void> { s.whenPrepared(null) }
       }
 
-      override fun getFabricId(): Identifier = Identifier(ModID, "shaders")
+      override fun getFabricId(): Identifier = Identifier(MOD_ID, "shaders")
 
     })
   }
 
   private fun loadShader(rm: ResourceManager, id: String): Int {
-    val vshs = rm.getResource(Identifier(ModID, "shaders/$id.vert")).use { it.inputStream.bufferedReader().readText() }
-    val fshs = rm.getResource(Identifier(ModID, "shaders/$id.frag")).use { it.inputStream.bufferedReader().readText() }
+    val vshs = rm.getResource(Identifier(MOD_ID, "shaders/$id.vert")).use { it.inputStream.bufferedReader().readText() }
+    val fshs = rm.getResource(Identifier(MOD_ID, "shaders/$id.frag")).use { it.inputStream.bufferedReader().readText() }
 
     val vsh = GL30.glCreateShader(GL30.GL_VERTEX_SHADER)
     val fsh = GL30.glCreateShader(GL30.GL_FRAGMENT_SHADER)

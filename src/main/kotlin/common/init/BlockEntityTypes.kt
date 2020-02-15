@@ -2,7 +2,7 @@ package net.dblsaiko.retrocomputers.common.init
 
 import net.dblsaiko.hctm.common.block.BaseWireBlockEntity
 import net.dblsaiko.hctm.common.util.delegatedNotNull
-import net.dblsaiko.retrocomputers.ModID
+import net.dblsaiko.retrocomputers.MOD_ID
 import net.dblsaiko.retrocomputers.common.block.ComputerEntity
 import net.dblsaiko.retrocomputers.common.block.DiskDriveEntity
 import net.dblsaiko.retrocomputers.common.block.RedstonePortEntity
@@ -20,12 +20,12 @@ object BlockEntityTypes {
 
   private val tasks = mutableListOf<() -> Unit>()
 
-  val Computer by create(::ComputerEntity, "computer", Blocks.Computer)
-  val Terminal by create(::TerminalEntity, "terminal", Blocks.Terminal)
-  val DiskDrive by create(::DiskDriveEntity, "disk_drive", Blocks.DiskDrive)
-  val RedstonePort by create(::RedstonePortEntity, "redstone_port", Blocks.RedstonePort)
+  val COMPUTER by create(::ComputerEntity, "computer", Blocks.COMPUTER)
+  val TERMINAL by create(::TerminalEntity, "terminal", Blocks.TERMINAL)
+  val DISK_DRIVE by create(::DiskDriveEntity, "disk_drive", Blocks.DISK_DRIVE)
+  val REDSTONE_PORT by create(::RedstonePortEntity, "redstone_port", Blocks.REDSTONE_PORT)
 
-  val RibbonCable by create(::BaseWireBlockEntity, "ribbon_cable", Blocks.RibbonCable)
+  val RIBBON_CABLE by create(::BaseWireBlockEntity, "ribbon_cable", Blocks.RIBBON_CABLE)
 
   private fun <T : BlockEntity> create(builder: () -> T, name: String, vararg blocks: Block): ReadOnlyProperty<BlockEntityTypes, BlockEntityType<T>> {
     return create(Builder.create(Supplier(builder), *blocks).build(null), name)
@@ -40,7 +40,7 @@ object BlockEntityTypes {
 
   private fun <T : BlockEntity> create(type: BlockEntityType<T>, name: String): ReadOnlyProperty<BlockEntityTypes, BlockEntityType<T>> {
     var regType: BlockEntityType<T>? = null
-    tasks += { regType = Registry.register(Registry.BLOCK_ENTITY_TYPE, Identifier(ModID, name), type) }
+    tasks += { regType = Registry.register(Registry.BLOCK_ENTITY_TYPE, Identifier(MOD_ID, name), type) }
     return delegatedNotNull { regType }
   }
 
