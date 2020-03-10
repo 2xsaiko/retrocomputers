@@ -18,13 +18,9 @@ import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.Vec3d
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
-import org.lwjgl.opengl.GL13
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
 import kotlin.experimental.xor
 import kotlin.math.round
 
@@ -47,8 +43,9 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   private var fb: Framebuffer? = null
 
   override fun tick() {
-    val minecraft = minecraft ?: return
-    val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d(te.pos).add(0.5, 0.5, 0.5)) ?: Double.POSITIVE_INFINITY
+    val minecraft = client ?: return
+    val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.method_24953(te.pos))
+      ?: Double.POSITIVE_INFINITY
     if (dist > 10 * 10) minecraft.openScreen(null)
   }
 
@@ -57,7 +54,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 
     val sh = Shaders.screen()
     val fb = fb ?: return
-    val mc = minecraft ?: return
+    val mc = client ?: return
 
     fb.setTexFilter(if ((mc.window.scaleFactor.toInt() % 2) == 0) GL11.GL_NEAREST else GL11.GL_LINEAR)
 
@@ -184,7 +181,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   }
 
   override fun init() {
-    minecraft!!.keyboard.enableRepeatEvents(true)
+    client!!.keyboard.enableRepeatEvents(true)
 
     initDrawData()
     initFb()
@@ -234,7 +231,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   }
 
   override fun removed() {
-    minecraft!!.keyboard.enableRepeatEvents(false)
+    client!!.keyboard.enableRepeatEvents(false)
     fb?.delete()
     fb = null
   }
@@ -244,7 +241,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 }
 
 private fun createTexture(): Int {
-  val tex = TextureUtil.generateTextureId()
+  val tex = TextureUtil.method_24956()
   RenderSystem.bindTexture(tex)
   RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
   RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)

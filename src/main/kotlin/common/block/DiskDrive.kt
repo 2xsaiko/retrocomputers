@@ -16,9 +16,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager.Builder
 import net.minecraft.state.property.BooleanProperty
 import net.minecraft.util.ActionResult
-import net.minecraft.util.ActionResult.FAIL
-import net.minecraft.util.ActionResult.PASS
-import net.minecraft.util.ActionResult.SUCCESS
+import net.minecraft.util.ActionResult.*
 import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.Tickable
@@ -146,9 +144,8 @@ class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {
     if (world.isClient) return true
 
     if (!breakBlock) {
-      val dirVec = Vec3d(cachedState[BaseBlock.Direction].vector)
-      val pos = Vec3d(pos)
-        .add(0.5, 0.5, 0.5)
+      val dirVec = Vec3d.method_24954(cachedState[BaseBlock.Direction].vector)
+      val pos = Vec3d.method_24953(pos)
         .add(dirVec.multiply(0.75))
       val item = ItemEntity(world, pos.x, pos.y, pos.z, stack)
       item.velocity = dirVec.multiply(0.1)

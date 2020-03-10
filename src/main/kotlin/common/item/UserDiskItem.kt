@@ -31,8 +31,12 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
   override fun getUuid(stack: ItemStack): UUID {
     val tag = stack.orCreateTag
-    if (!tag.containsUuid("uuid")) tag.putUuid("uuid", UUID.randomUUID())
-    return tag.getUuid("uuid")
+    if (tag.containsUuidOld("uuid")) {
+      tag.putUuidNew("uuid", tag.getUuidOld("uuid"))
+      tag.removeUuidOld("uuid")
+    }
+    if (!tag.containsUuidNew("uuid")) tag.putUuidNew("uuid", UUID.randomUUID())
+    return tag.getUuidNew("uuid")
   }
 
   override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {

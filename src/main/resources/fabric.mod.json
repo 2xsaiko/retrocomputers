@@ -1,10 +1,12 @@
 {
   "schemaVersion": 1,
   "id": "retrocomputers",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "name": "RetroComputers",
   "description": "Programmable persistent computers.",
-  "authors": ["2xsaiko"],
+  "authors": [
+    "2xsaiko"
+  ],
   "contact": {
     "homepage": "https://github.com/2xsaiko/HCTM",
     "sources": "https://github.com/2xsaiko/HCTM"
@@ -17,6 +19,7 @@
     "client": [{ "value": "net.dblsaiko.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
   },
   "depends": {
+    "minecraft": ">=1.16-20w10a",
     "fabricloader": ">=0.4.0",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.3.30",
