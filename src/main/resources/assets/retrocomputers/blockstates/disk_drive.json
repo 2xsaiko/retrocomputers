@@ -1,8 +1,34 @@
 {
   "variants": {
-    "facing=north": { "model": "retrocomputers:block/disk_drive" },
-    "facing=south": { "model": "retrocomputers:block/disk_drive", "y": 180 },
-    "facing=west": { "model": "retrocomputers:block/disk_drive", "y": 270 },
-    "facing=east": { "model": "retrocomputers:block/disk_drive", "y": 90 }
+    "facing=north,has_disk=false": {
+      "model": "retrocomputers:block/disk_drive"
+    },
+    "facing=south,has_disk=false": {
+      "model": "retrocomputers:block/disk_drive",
+      "y": 180
+    },
+    "facing=west,has_disk=false": {
+      "model": "retrocomputers:block/disk_drive",
+      "y": 270
+    },
+    "facing=east,has_disk=false": {
+      "model": "retrocomputers:block/disk_drive",
+      "y": 90
+    },
+    "facing=north,has_disk=true": {
+      "model": "retrocomputers:block/disk_drive_with_disk"
+    },
+    "facing=south,has_disk=true": {
+      "model": "retrocomputers:block/disk_drive_with_disk",
+      "y": 180
+    },
+    "facing=west,has_disk=true": {
+      "model": "retrocomputers:block/disk_drive_with_disk",
+      "y": 270
+    },
+    "facing=east,has_disk=true": {
+      "model": "retrocomputers:block/disk_drive_with_disk",
+      "y": 90
+    }
   }
 }

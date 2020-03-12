@@ -1,0 +1,7 @@
+{
+  "parent": "retrocomputers:block/disk_drive",
+  "textures": {
+    "particle": "retrocomputers:block/disk_drive_top",
+    "front": "retrocomputers:block/disk_drive_front_disk"
+  }
+}

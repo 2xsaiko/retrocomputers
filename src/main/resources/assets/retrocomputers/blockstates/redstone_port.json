@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "retrocomputers:block/redstone_port"
+    },
+    "facing=south": {
+      "model": "retrocomputers:block/redstone_port",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "retrocomputers:block/redstone_port",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "retrocomputers:block/redstone_port",
+      "y": 90
+    }
+  }
+}

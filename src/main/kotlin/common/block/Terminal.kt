@@ -34,7 +34,7 @@ class TerminalEntity : BaseBlockEntity(BlockEntityTypes.Terminal), Tickable {
 
   override var busId: Byte = 1
 
-  val screen = ByteArray(80 * 50)
+  val screen = ByteArray(80 * 50) { 0x20 }
   val charset = Resources.charset()
   val kb = ByteArray(16)
 

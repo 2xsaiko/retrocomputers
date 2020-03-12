@@ -3,13 +3,7 @@ package net.dblsaiko.retrocomputers.common.init
 import net.dblsaiko.hctm.common.block.BaseWireBlockEntity
 import net.dblsaiko.hctm.common.block.BaseWireItem
 import net.dblsaiko.retrocomputers.ModID
-import net.dblsaiko.retrocomputers.common.block.ComputerBlock
-import net.dblsaiko.retrocomputers.common.block.ComputerEntity
-import net.dblsaiko.retrocomputers.common.block.DiskDriveBlock
-import net.dblsaiko.retrocomputers.common.block.DiskDriveEntity
-import net.dblsaiko.retrocomputers.common.block.RibbonCableBlock
-import net.dblsaiko.retrocomputers.common.block.TerminalBlock
-import net.dblsaiko.retrocomputers.common.block.TerminalEntity
+import net.dblsaiko.retrocomputers.common.block.*
 import net.dblsaiko.retrocomputers.common.item.ImageDiskItem
 import net.dblsaiko.retrocomputers.common.item.UserDiskItem
 import net.dblsaiko.retrocomputers.common.packet.server.onKeyTypedTerminal
@@ -30,6 +24,7 @@ object Blocks {
   val Computer = create(ComputerBlock(), "computer")
   val Terminal = create(TerminalBlock(), "terminal")
   val DiskDrive = create(DiskDriveBlock(), "disk_drive")
+  val RedstonePort = create(RedstonePortBlock(), "redstone_port")
 
   val RibbonCable = create(RibbonCableBlock(), "ribbon_cable")
 
@@ -44,6 +39,7 @@ object BlockEntityTypes {
   val Computer = create(::ComputerEntity, "computer", Blocks.Computer)
   val Terminal = create(::TerminalEntity, "terminal", Blocks.Terminal)
   val DiskDrive = create(::DiskDriveEntity, "disk_drive", Blocks.DiskDrive)
+  val RedstonePort = create(::RedstonePortEntity, "redstone_port", Blocks.RedstonePort)
 
   val RibbonCable = create(::BaseWireBlockEntity, "ribbon_cable", Blocks.RibbonCable)
 
@@ -65,6 +61,7 @@ object Items {
   val Computer = create(Blocks.Computer, "computer")
   val Terminal = create(Blocks.Terminal, "terminal")
   val DiskDrive = create(Blocks.DiskDrive, "disk_drive")
+  val RedstonePort = create(Blocks.RedstonePort, "redstone_port")
 
   val RibbonCable = create(BaseWireItem(Blocks.RibbonCable, Item.Settings()), "ribbon_cable")
 
