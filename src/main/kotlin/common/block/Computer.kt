@@ -6,6 +6,7 @@ import net.dblsaiko.retrocomputers.common.cpu.Processor
 import net.dblsaiko.retrocomputers.common.cpu.ProcessorHost
 import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.dblsaiko.retrocomputers.common.util.unsigned
+import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
@@ -18,7 +19,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class ComputerBlock : BaseBlock() {
+class ComputerBlock(settings: Block.Settings) : BaseBlock(settings) {
 
   override fun createBlockEntity(view: BlockView) = ComputerEntity()
 

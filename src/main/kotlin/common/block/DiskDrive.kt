@@ -16,7 +16,9 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager.Builder
 import net.minecraft.state.property.BooleanProperty
 import net.minecraft.util.ActionResult
-import net.minecraft.util.ActionResult.*
+import net.minecraft.util.ActionResult.FAIL
+import net.minecraft.util.ActionResult.PASS
+import net.minecraft.util.ActionResult.SUCCESS
 import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.Tickable
@@ -29,7 +31,7 @@ import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.math.min
 
-class DiskDriveBlock : BaseBlock() {
+class DiskDriveBlock(settings: Block.Settings) : BaseBlock(settings) {
 
   init {
     defaultState = defaultState.with(DiskDriveProperties.HasDisk, false)

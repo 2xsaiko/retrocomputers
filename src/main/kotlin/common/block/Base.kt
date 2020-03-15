@@ -17,7 +17,6 @@ import net.minecraft.block.BlockRenderType.MODEL
 import net.minecraft.block.BlockState
 import net.minecraft.block.BlockWithEntity
 import net.minecraft.block.HorizontalFacingBlock
-import net.minecraft.block.Material
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.item.ItemPlacementContext
@@ -34,7 +33,7 @@ import net.minecraft.util.math.Direction.NORTH
 import net.minecraft.world.IWorld
 import net.minecraft.world.World
 
-abstract class BaseBlock : BlockWithEntity(Block.Settings.of(Material.METAL)), BlockPartProvider {
+abstract class BaseBlock(settings: Block.Settings) : BlockWithEntity(settings), BlockPartProvider {
 
   init {
     this.defaultState = this.defaultState.with(Direction, NORTH)

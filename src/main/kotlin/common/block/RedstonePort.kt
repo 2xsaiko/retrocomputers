@@ -3,6 +3,7 @@ package net.dblsaiko.retrocomputers.common.block
 import net.dblsaiko.hctm.common.api.BlockBundledCableIo
 import net.dblsaiko.hctm.common.wire.PartExt
 import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
+import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.EntityContext
 import net.minecraft.util.math.BlockPos
@@ -13,7 +14,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class RedstonePortBlock : BaseBlock(), BlockBundledCableIo {
+class RedstonePortBlock(settings: Block.Settings) : BaseBlock(settings), BlockBundledCableIo {
 
   override fun createBlockEntity(world: BlockView?): RedstonePortEntity {
     return RedstonePortEntity()

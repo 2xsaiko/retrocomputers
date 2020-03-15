@@ -24,7 +24,7 @@ object Resources {
 
   fun disk(id: Identifier) = Disks.getValue(id).clone()
 
-  init {
+  internal fun register() {
     ResourceManagerHelper.get(SERVER_DATA).registerReloadListener(object : IdentifiableResourceReloadListener {
 
       override fun reload(s: Synchronizer, rm: ResourceManager, profiler: Profiler, profiler1: Profiler, executor: Executor, executor1: Executor): CompletableFuture<Void> {

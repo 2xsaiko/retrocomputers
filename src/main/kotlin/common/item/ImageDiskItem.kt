@@ -8,7 +8,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import java.util.*
 
-class ImageDiskItem(val image: Identifier) : Item(Item.Settings().maxCount(1)), ItemDisk {
+class ImageDiskItem(val image: Identifier, settings: Item.Settings) : Item(settings), ItemDisk {
 
   override fun getLabel(stack: ItemStack): String = "System Disk"
 
