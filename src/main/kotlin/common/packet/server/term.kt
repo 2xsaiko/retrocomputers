@@ -2,7 +2,7 @@ package net.dblsaiko.retrocomputers.common.packet.server
 
 import net.dblsaiko.retrocomputers.common.block.TerminalEntity
 import net.fabricmc.fabric.api.network.PacketContext
-import net.minecraft.util.PacketByteBuf
+import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.math.Vec3d
 
 fun onKeyTypedTerminal(context: PacketContext, buffer: PacketByteBuf) {

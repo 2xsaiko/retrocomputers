@@ -3,6 +3,7 @@ package net.dblsaiko.retrocomputers.client.gui
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.buffer.Unpooled
+import net.dblsaiko.qcommon.croco.Mat4
 import net.dblsaiko.retrocomputers.client.init.Shaders
 import net.dblsaiko.retrocomputers.common.block.TerminalEntity
 import net.dblsaiko.retrocomputers.common.init.Packets
@@ -13,14 +14,19 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.texture.TextureUtil
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.network.PacketByteBuf
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.Vec3d
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
+import org.lwjgl.opengl.GL13
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL30
 import kotlin.experimental.xor
 import kotlin.math.round
 
@@ -35,6 +41,7 @@ private const val scale = 8
 
 class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.retrocomputers.terminal")) {
 
+  private var uMvp = 0
   private var uCharset = 0
   private var uScreen = 0
   private var aXyz = 0
@@ -45,12 +52,12 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   override fun tick() {
     val minecraft = client ?: return
     val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.method_24953(te.pos))
-      ?: Double.POSITIVE_INFINITY
+               ?: Double.POSITIVE_INFINITY
     if (dist > 10 * 10) minecraft.openScreen(null)
   }
 
-  override fun render(mouseX: Int, mouseY: Int, delta: Float) {
-    renderBackground()
+  override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+    renderBackground(matrices)
 
     val sh = Shaders.screen()
     val fb = fb ?: return
@@ -59,13 +66,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     fb.setTexFilter(if ((mc.window.scaleFactor.toInt() % 2) == 0) GL11.GL_NEAREST else GL11.GL_LINEAR)
 
     fb.beginWrite(true)
-    RenderSystem.matrixMode(GL11.GL_PROJECTION)
-    RenderSystem.pushMatrix()
-    RenderSystem.loadIdentity()
-    RenderSystem.ortho(0.0, 1.0, 1.0, 0.0, -1.0, 1.0)
-    RenderSystem.matrixMode(GL11.GL_MODELVIEW)
-    RenderSystem.pushMatrix()
-    RenderSystem.loadIdentity()
+    val mat = Mat4.ortho(0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f)
 
     GL30.glUseProgram(sh)
     GL30.glBindVertexArray(vao)
@@ -77,6 +78,13 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     RenderSystem.activeTexture(GL13.GL_TEXTURE0)
     RenderSystem.enableTexture()
     RenderSystem.bindTexture(screenTex)
+
+    buf.clear()
+    val fbuf = buf.asFloatBuffer()
+    mat.intoBuffer(fbuf)
+    fbuf.flip()
+    GL30.glUniformMatrix4fv(uMvp, false, fbuf)
+
     GL30.glUniform1i(uScreen, 0)
 
     buf.clear()
@@ -117,27 +125,19 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     mc.framebuffer.beginWrite(true)
     fb.beginRead()
 
-    RenderSystem.matrixMode(GL11.GL_PROJECTION)
-    RenderSystem.popMatrix()
-    RenderSystem.matrixMode(GL11.GL_MODELVIEW)
-    RenderSystem.popMatrix()
-
-    RenderSystem.color4f(1f, 1f, 1f, 1f)
-
-    val swidth = 8 * 80 * 0.5
-    val sheight = 8 * 50 * 0.5
-    val x1 = round(width / 2.0 - swidth / 2.0)
-    val y1 = round(height / 2.0 - sheight / 2.0)
+    val swidth = 8 * 80 * 0.5f
+    val sheight = 8 * 50 * 0.5f
+    val x1 = round(width / 2.0f - swidth / 2.0f)
+    val y1 = round(height / 2.0f - sheight / 2.0f)
 
     val t = Tessellator.getInstance()
     val buf = t.buffer
     buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE)
-    buf.vertex(x1, y1, 0.0).texture(0f, 1f).next()
-    buf.vertex(x1, y1 + sheight, 0.0).texture(0f, 0f).next()
-    buf.vertex(x1 + swidth, y1 + sheight, 0.0).texture(1f, 0f).next()
-    buf.vertex(x1 + swidth, y1, 0.0).texture(1f, 1f).next()
+    buf.vertex(matrices.peek().model, x1, y1, 0.0f).texture(0f, 1f).next()
+    buf.vertex(matrices.peek().model, x1, y1 + sheight, 0.0f).texture(0f, 0f).next()
+    buf.vertex(matrices.peek().model, x1 + swidth, y1 + sheight, 0.0f).texture(1f, 0f).next()
+    buf.vertex(matrices.peek().model, x1 + swidth, y1, 0.0f).texture(1f, 1f).next()
     t.draw()
-
   }
 
   override fun keyPressed(key: Int, scancode: Int, modifiers: Int): Boolean {
@@ -194,6 +194,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     GL30.glBindVertexArray(vao)
     GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
 
+    uMvp = GL30.glGetUniformLocation(sh, "mvp")
     uCharset = GL30.glGetUniformLocation(sh, "charset")
     uScreen = GL30.glGetUniformLocation(sh, "screen")
 

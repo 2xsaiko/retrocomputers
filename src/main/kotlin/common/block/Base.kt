@@ -12,6 +12,7 @@ import net.dblsaiko.hctm.common.wire.getWireNetworkState
 import net.dblsaiko.retrocomputers.common.block.wire.PartIoCarrier
 import net.dblsaiko.retrocomputers.common.block.wire.PartIoProvider
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType.MODEL
 import net.minecraft.block.BlockState
@@ -33,7 +34,7 @@ import net.minecraft.util.math.Direction.NORTH
 import net.minecraft.world.IWorld
 import net.minecraft.world.World
 
-abstract class BaseBlock(settings: Block.Settings) : BlockWithEntity(settings), BlockPartProvider {
+abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(settings), BlockPartProvider {
 
   init {
     this.defaultState = this.defaultState.with(Direction, NORTH)
@@ -55,7 +56,7 @@ abstract class BaseBlock(settings: Block.Settings) : BlockWithEntity(settings), 
     b.add(Direction)
   }
 
-  override fun method_9517(state: BlockState, world: IWorld, pos: BlockPos, flags: Int) {
+  override fun prepare(state: BlockState, world: IWorld, pos: BlockPos, flags: Int) {
     if (!world.isClient && world is ServerWorld)
       world.getWireNetworkState().controller.onBlockChanged(world, pos, state)
   }
@@ -141,8 +142,8 @@ abstract class BaseBlockEntity(type: BlockEntityType<*>) : BlockEntity(type), Bl
     return super.toTag(tag)
   }
 
-  override fun fromTag(tag: CompoundTag) {
-    super.fromTag(tag)
+  override fun fromTag(state: BlockState, tag: CompoundTag) {
+    super.fromTag(state, tag)
     busId = tag.getByte("bus_id")
   }
 

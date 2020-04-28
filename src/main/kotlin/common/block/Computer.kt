@@ -6,7 +6,7 @@ import net.dblsaiko.retrocomputers.common.cpu.Processor
 import net.dblsaiko.retrocomputers.common.cpu.ProcessorHost
 import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.dblsaiko.retrocomputers.common.util.unsigned
-import net.minecraft.block.Block
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class ComputerBlock(settings: Block.Settings) : BaseBlock(settings) {
+class ComputerBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 
   override fun createBlockEntity(view: BlockView) = ComputerEntity()
 
@@ -134,8 +134,8 @@ class ComputerEntity : BaseBlockEntity(BlockEntityTypes.Computer), ProcessorHost
     return super.toTag(tag)
   }
 
-  override fun fromTag(tag: CompoundTag) {
-    super.fromTag(tag)
+  override fun fromTag(state: BlockState, tag: CompoundTag) {
+    super.fromTag(state, tag)
     cpu.fromTag(tag.getCompound("cpu"))
     tag.getByteArray("mem").copyInto(mem)
     targetBus = tag.getByte("target_bus")

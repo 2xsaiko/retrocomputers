@@ -3,9 +3,9 @@ package net.dblsaiko.retrocomputers.common.block
 import net.dblsaiko.hctm.common.api.BlockBundledCableIo
 import net.dblsaiko.hctm.common.wire.PartExt
 import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
-import net.minecraft.block.Block
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.BlockState
-import net.minecraft.entity.EntityContext
+import net.minecraft.block.ShapeContext
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.DOWN
@@ -14,7 +14,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class RedstonePortBlock(settings: Block.Settings) : BaseBlock(settings), BlockBundledCableIo {
+class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), BlockBundledCableIo {
 
   override fun createBlockEntity(world: BlockView?): RedstonePortEntity {
     return RedstonePortEntity()
@@ -37,7 +37,7 @@ class RedstonePortBlock(settings: Block.Settings) : BaseBlock(settings), BlockBu
     super.onBundledInputChange(data, state, world, pos, side, edge)
   }
 
-  override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: EntityContext): VoxelShape {
+  override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
     return Box
   }
 

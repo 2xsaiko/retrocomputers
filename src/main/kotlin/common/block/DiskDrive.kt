@@ -5,6 +5,7 @@ import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.dblsaiko.retrocomputers.common.item.ext.ItemDisk
 import net.dblsaiko.retrocomputers.common.util.shr
 import net.dblsaiko.retrocomputers.common.util.unsigned
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.ItemEntity
@@ -31,7 +32,7 @@ import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.math.min
 
-class DiskDriveBlock(settings: Block.Settings) : BaseBlock(settings) {
+class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 
   init {
     defaultState = defaultState.with(DiskDriveProperties.HasDisk, false)
@@ -201,8 +202,8 @@ class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DiskDrive), Tickable {
     return super.toTag(tag)
   }
 
-  override fun fromTag(tag: CompoundTag) {
-    super.fromTag(tag)
+  override fun fromTag(state: BlockState, tag: CompoundTag) {
+    super.fromTag(state, tag)
     stack = ItemStack.fromTag(tag.getCompound("item"))
   }
 

@@ -1,4 +1,4 @@
-#version 130
+#version 330 core
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 50
@@ -9,7 +9,7 @@
 uniform usampler2D charset;
 uniform usampler2D screen;
 
-in vec2 uv1;
+in vec2 f_uv;
 
 out vec4 fragColor;
 
@@ -54,7 +54,7 @@ float get_pixel_with_fx(in vec2 screenPos) {
 }
 
 void main() {
-    vec2 screenPos = vec2(uv1.x * SCREEN_WIDTH * 8, uv1.y * SCREEN_HEIGHT * 8);
+    vec2 screenPos = vec2(f_uv.x * SCREEN_WIDTH * 8, f_uv.y * SCREEN_HEIGHT * 8);
 
     float strength = get_pixel_with_fx(screenPos);
 

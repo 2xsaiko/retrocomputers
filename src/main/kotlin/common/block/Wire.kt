@@ -12,7 +12,7 @@ import net.dblsaiko.hctm.common.wire.WirePartExtType
 import net.dblsaiko.hctm.common.wire.find
 import net.dblsaiko.retrocomputers.common.block.wire.PartIoCarrier
 import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
-import net.minecraft.block.Block
+import net.minecraft.block.AbstractBlock
 import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.world.ServerWorld
@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 
-class RibbonCableBlock(settings: Block.Settings) : SingleBaseWireBlock(settings, 1 / 16f) {
+class RibbonCableBlock(settings: AbstractBlock.Settings) : SingleBaseWireBlock(settings, 1 / 16f) {
 
   override fun createPartExtFromSide(side: Direction) = RibbonCablePartExt(side)
 

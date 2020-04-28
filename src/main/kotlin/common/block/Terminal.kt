@@ -4,7 +4,7 @@ import net.dblsaiko.retrocomputers.RetroComputers
 import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.dblsaiko.retrocomputers.common.init.Resources
 import net.dblsaiko.retrocomputers.common.util.unsigned
-import net.minecraft.block.Block
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
@@ -19,7 +19,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.experimental.xor
 
-class TerminalBlock(settings: Block.Settings) : BaseBlock(settings) {
+class TerminalBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
 
   override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
     val te = world.getBlockEntity(pos) as? TerminalEntity ?: return FAIL
@@ -185,8 +185,8 @@ class TerminalEntity : BaseBlockEntity(BlockEntityTypes.Terminal), Tickable {
     return super.toTag(tag)
   }
 
-  override fun fromTag(tag: CompoundTag) {
-    super.fromTag(tag)
+  override fun fromTag(state: BlockState, tag: CompoundTag) {
+    super.fromTag(state, tag)
     tag.getByteArray("screen").copyInto(screen)
     tag.getByteArray("charset").copyInto(charset)
     tag.getByteArray("kb").copyInto(kb)

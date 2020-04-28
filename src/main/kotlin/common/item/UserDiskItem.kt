@@ -1,6 +1,7 @@
 package net.dblsaiko.retrocomputers.common.item
 
 import net.dblsaiko.retrocomputers.common.item.ext.ItemDisk
+import net.minecraft.class_5218
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
@@ -31,17 +32,13 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
   override fun getUuid(stack: ItemStack): UUID {
     val tag = stack.orCreateTag
-    if (tag.containsUuidOld("uuid")) {
-      tag.putUuidNew("uuid", tag.getUuidOld("uuid"))
-      tag.removeUuidOld("uuid")
-    }
     if (!tag.containsUuidNew("uuid")) tag.putUuidNew("uuid", UUID.randomUUID())
     return tag.getUuidNew("uuid")
   }
 
   override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
     if (index !in 0 until 2048) return null
-    val path = world.saveHandler.worldDir.toPath().resolve("rcdisks").resolve(getUuid(stack).toString())
+    val path = world.server.method_27050(class_5218.field_24188).resolve("rcdisks").resolve(getUuid(stack).toString())
     Files.createDirectories(path.parent)
     return Sector(path, index)
   }
@@ -64,7 +61,7 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
     override fun isEmpty() = raf.length() <= sector * 128L
 
     override fun close() {
-      val hashCode = Arrays.hashCode(data)
+      val hashCode = data.contentHashCode()
       if (hashCode != csum) {
         val emptyHash = -474025983
 

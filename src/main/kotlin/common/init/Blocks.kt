@@ -7,6 +7,7 @@ import net.dblsaiko.retrocomputers.common.block.DiskDriveBlock
 import net.dblsaiko.retrocomputers.common.block.RedstonePortBlock
 import net.dblsaiko.retrocomputers.common.block.RibbonCableBlock
 import net.dblsaiko.retrocomputers.common.block.TerminalBlock
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.Material
 import net.minecraft.util.Identifier
@@ -17,12 +18,12 @@ object Blocks {
 
   private val tasks = mutableListOf<() -> Unit>()
 
-  val Computer by create(ComputerBlock(Block.Settings.of(Material.METAL)), "computer")
-  val Terminal by create(TerminalBlock(Block.Settings.of(Material.METAL)), "terminal")
-  val DiskDrive by create(DiskDriveBlock(Block.Settings.of(Material.METAL)), "disk_drive")
-  val RedstonePort by create(RedstonePortBlock(Block.Settings.of(Material.METAL)), "redstone_port")
+  val Computer by create(ComputerBlock(AbstractBlock.Settings.of(Material.METAL)), "computer")
+  val Terminal by create(TerminalBlock(AbstractBlock.Settings.of(Material.METAL)), "terminal")
+  val DiskDrive by create(DiskDriveBlock(AbstractBlock.Settings.of(Material.METAL)), "disk_drive")
+  val RedstonePort by create(RedstonePortBlock(AbstractBlock.Settings.of(Material.METAL)), "redstone_port")
 
-  val RibbonCable by create(RibbonCableBlock(Block.Settings.of(Material.STONE).noCollision().strength(0.25f, 0.25f)), "ribbon_cable")
+  val RibbonCable by create(RibbonCableBlock(AbstractBlock.Settings.of(Material.STONE).noCollision().strength(0.25f, 0.25f)), "ribbon_cable")
 
   private fun <T : Block> create(block: T, name: String): ReadOnlyProperty<Blocks, T> {
     var regBlock: T? = null
