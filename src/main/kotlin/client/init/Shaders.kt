@@ -44,7 +44,7 @@ object Shaders {
     val prog = GL30.glCreateProgram()
 
     // No goto? I'll make my own.
-    error@ do {
+    run {
       GL30.glShaderSource(vsh, vshs)
       GL30.glShaderSource(fsh, fshs)
 
@@ -54,7 +54,7 @@ object Shaders {
         val log = GL30.glGetShaderInfoLog(vsh, 32768)
         println("Failed to compile vertex shader '$id'")
         for (line in log.lineSequence()) println(line)
-        break@error
+        return@run
       }
 
       GL30.glCompileShader(fsh)
@@ -63,7 +63,7 @@ object Shaders {
         val log = GL30.glGetShaderInfoLog(fsh, 32768)
         println("Failed to compile fragment shader '$id'")
         for (line in log.lineSequence()) println(line)
-        break@error
+        return@run
       }
 
       GL30.glAttachShader(prog, vsh)
@@ -75,13 +75,13 @@ object Shaders {
         val log = GL30.glGetProgramInfoLog(prog, 32768)
         println("Failed to link program '$id'")
         for (line in log.lineSequence()) println(line)
-        break@error
+        return@run
       }
 
       GL30.glDeleteShader(vsh)
       GL30.glDeleteShader(fsh)
       return prog
-    } while (false)
+    }
 
     GL30.glDeleteShader(vsh)
     GL30.glDeleteShader(fsh)
