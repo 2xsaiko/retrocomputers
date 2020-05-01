@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "retrocomputers",
-  "version": "4.3.0",
+  "version": "${version}",
   "name": "RetroComputers",
   "description": "Programmable persistent computers.",
   "authors": [
