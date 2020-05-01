@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": %INGREDIENTS,
+  "result": "%OUTPUT"
+}
+

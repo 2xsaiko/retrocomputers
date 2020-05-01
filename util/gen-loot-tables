@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+add() {
+  sed "s/%DROP/${modid}:${2}/g" \
+    templates/block-loot-table.json.in \
+    > ${modid}-loot-tables/${1}.json
+}
+
+include() {
+  modid=$1
+  source "${1}.lt.in"
+}
+
+include retrocomputers

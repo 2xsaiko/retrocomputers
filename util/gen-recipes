@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+format_ingredient() {
+  eval "value=\$${1}"
+  kind=item
+  if [[ ${value:0:1} = '#' ]]; then
+    kind=tag
+    value=${value:1}
+  fi
+  echo -n "{ \"$kind\": \"$value\" }"
+}
+
+format_keys() {
+  for key in $(sed 's/\s+//g' | fold -w1 | sort -u); do
+    ingredient="$(format_ingredient ${key})"
+    echo -n "\"$key\": ${ingredient}, "
+  done
+}
+
+format_ingredients() {
+  for key in $(fold -w1 | sort); do
+    ingredient="$(format_ingredient ${key})"
+    echo -n "${ingredient}, "
+  done
+}
+
+add() {
+  count=$3
+  line1=$4
+  line2=$5
+  line3=$6
+  if [[ "$line3" != "" ]]; then
+    lcount=3
+  elif [[ "$line2" != "" ]]; then
+    lcount=2
+  else
+    lcount=1
+  fi
+  keys="$(echo ${line1} ${line2} ${line3} | format_keys | rev | cut -d, -f2- | rev)"
+  pattern="$(echo "\"${line1}\", \"${line2}\", \"${line3}\"" | sed -E 's/(, "")+//g')"
+  sed -e "s/%OUTPUT/${modid}:${2}/" \
+    -e "s/%COUNT/$count/" \
+    -e "s/%PATTERN/$pattern/" \
+    -e "s/%KEYS/$keys/" \
+    templates/shaped-recipe.json.in \
+    > ${modid}-recipes/${1}.json
+}
+
+sl_add() {
+  count=$3
+  raw_input=$4
+  ingredients="$(echo ${raw_input} | format_ingredients | rev | cut -d, -f2- | rev)"
+  sed -e "s/%OUTPUT/${modid}:${2}/" \
+    -e "s/%COUNT/$count/" \
+    -e "s/%INGREDIENTS/$ingredients/" \
+    templates/shapeless-recipe.json.in \
+    > ${modid}-recipes/${1}.json
+}
+
+bfurnace_add() {
+  raw_input=$3
+  ingredients="$(echo ${raw_input} | format_ingredients | rev | cut -d, -f2- | rev)"
+  sed -e "s/%OUTPUT/${modid}:${2}/" \
+    -e "s/%COUNT/$count/" \
+    -e "s/%INGREDIENTS/$ingredients/" \
+    templates/blast-furnace-recipe.json.in \
+    > ${modid}-recipes/${1}.json
+}
+
+include() {
+  modid=$1
+  source "${1}.recipes.in"
+}
+
+include retrocomputers
