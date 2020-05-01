@@ -34,7 +34,9 @@ dependencies {
 
     modImplementation group: 'net.dblsaiko', name: 'hctm-base', version: hctm_base_version
     include group: 'net.dblsaiko', name: 'hctm-base', version: hctm_base_version
-    
+
+    modRuntime group: 'net.dblsaiko', name: 'rswires', version: rswires_version
+
     modRuntime(group: 'net.dblsaiko.qcommon.cfg', name: 'cfg', version: cfg_version) {
         exclude group: 'net.fabricmc.fabric-api'
         exclude module: 'cfg-keys'

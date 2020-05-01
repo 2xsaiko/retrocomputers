@@ -6,6 +6,7 @@ import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.BlockState
 import net.minecraft.block.ShapeContext
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.DOWN
@@ -62,10 +63,25 @@ class RedstonePortEntity : BaseBlockEntity(BlockEntityTypes.REDSTONE_PORT) {
     else -> 0
   }
 
-  override fun storeData(at: Byte, data: Byte) = when (at.toUByte().toUInt()) {
-    0x02u -> output = (output and 0xFF00u) or data.toUByte().toUShort()
-    0x03u -> output = (output and 0x00FFu) or (data.toInt() shl 8).toUShort()
-    else -> Unit
+  override fun storeData(at: Byte, data: Byte) {
+    when (at.toUByte().toUInt()) {
+      0x02u -> output = (output and 0xFF00u) or data.toUByte().toUShort()
+      0x03u -> output = (output and 0x00FFu) or (data.toInt() shl 8).toUShort()
+      else -> Unit
+    }
+    getWorld()?.updateNeighbor(getPos().offset(cachedState[BaseBlock.DIRECTION].opposite), cachedState.block, getPos())
+  }
+
+  override fun toTag(tag: CompoundTag): CompoundTag {
+    tag.putShort("output", output.toShort())
+    tag.putShort("input", input.toShort())
+    return super.toTag(tag)
+  }
+
+  override fun fromTag(state: BlockState, tag: CompoundTag) {
+    super.fromTag(state, tag)
+    output = tag.getShort("output").toUShort()
+    input = tag.getShort("input").toUShort()
   }
 
 }
