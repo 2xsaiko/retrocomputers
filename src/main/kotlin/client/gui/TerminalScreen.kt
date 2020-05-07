@@ -51,7 +51,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 
   override fun tick() {
     val minecraft = client ?: return
-    val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.method_24953(te.pos))
+    val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.ofCenter(te.pos))
                ?: Double.POSITIVE_INFINITY
     if (dist > 10 * 10) minecraft.openScreen(null)
   }

@@ -147,8 +147,8 @@ class DiskDriveEntity : BaseBlockEntity(BlockEntityTypes.DISK_DRIVE), Tickable {
     if (world.isClient) return true
 
     if (!breakBlock) {
-      val dirVec = Vec3d.method_24954(cachedState[BaseBlock.DIRECTION].vector)
-      val pos = Vec3d.method_24953(pos)
+      val dirVec = Vec3d.of(cachedState[BaseBlock.DIRECTION].vector)
+      val pos = Vec3d.ofCenter(pos)
         .add(dirVec.multiply(0.75))
       val item = ItemEntity(world, pos.x, pos.y, pos.z, stack)
       item.velocity = dirVec.multiply(0.1)

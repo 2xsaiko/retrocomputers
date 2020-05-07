@@ -10,7 +10,7 @@ fun onKeyTypedTerminal(context: PacketContext, buffer: PacketByteBuf) {
   val pos = buffer.readBlockPos()
   val k = buffer.readByte()
 
-  val dist = player.getCameraPosVec(1f).squaredDistanceTo(Vec3d.method_24953(pos))
+  val dist = player.getCameraPosVec(1f).squaredDistanceTo(Vec3d.ofCenter(pos))
   if (dist > 10 * 10) return
 
   context.taskQueue.execute {
