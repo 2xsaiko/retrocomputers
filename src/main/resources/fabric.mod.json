@@ -19,7 +19,7 @@
     "client": [{ "value": "net.dblsaiko.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
   },
   "depends": {
-    "minecraft": ">=1.16-20w10a",
+    "minecraft": ">=1.16-alpha.20.20.a",
     "fabricloader": ">=0.4.0",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.3.30",
