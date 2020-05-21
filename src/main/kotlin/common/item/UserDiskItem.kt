@@ -1,12 +1,12 @@
 package net.dblsaiko.retrocomputers.common.item
 
 import net.dblsaiko.retrocomputers.common.item.ext.ItemDisk
-import net.minecraft.class_5218
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.util.WorldSavePath
 import java.io.RandomAccessFile
 import java.nio.file.Files
 import java.nio.file.Path
@@ -38,7 +38,7 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
   override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
     if (index !in 0 until 2048) return null
-    val path = world.server.method_27050(class_5218.field_24188).resolve("rcdisks").resolve(getUuid(stack).toString())
+    val path = world.server.method_27050(WorldSavePath.ROOT).resolve("rcdisks").resolve(getUuid(stack).toString())
     Files.createDirectories(path.parent)
     return Sector(path, index)
   }

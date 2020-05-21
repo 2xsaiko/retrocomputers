@@ -31,8 +31,8 @@ import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.NORTH
-import net.minecraft.world.IWorld
 import net.minecraft.world.World
+import net.minecraft.world.WorldAccess
 
 abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(settings), BlockPartProvider {
 
@@ -56,7 +56,7 @@ abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(set
     b.add(DIRECTION)
   }
 
-  override fun prepare(state: BlockState, world: IWorld, pos: BlockPos, flags: Int) {
+  override fun prepare(state: BlockState, world: WorldAccess, pos: BlockPos, flags: Int) {
     if (!world.isClient && world is ServerWorld)
       world.getWireNetworkState().controller.onBlockChanged(world, pos, state)
   }

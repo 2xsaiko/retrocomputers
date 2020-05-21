@@ -43,12 +43,12 @@ class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
     return if (ent.ejectDisk() || ent.insertDisk(player.getStackInHand(hand))) SUCCESS else PASS
   }
 
-  override fun onBlockRemoved(state: BlockState, world: World, pos: BlockPos, newState: BlockState, boolean_1: Boolean) {
+  override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, boolean_1: Boolean) {
     if (state.block != newState.block) {
       (world.getBlockEntity(pos) as? DiskDriveEntity)?.ejectDisk(breakBlock = true)
     }
 
-    super.onBlockRemoved(state, world, pos, newState, boolean_1)
+    super.onStateReplaced(state, world, pos, newState, boolean_1)
   }
 
   override fun appendProperties(b: Builder<Block, BlockState>) {
