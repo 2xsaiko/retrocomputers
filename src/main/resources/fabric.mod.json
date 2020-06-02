@@ -19,12 +19,12 @@
     "client": [{ "value": "net.dblsaiko.retrocomputers.client.RetroComputersClient", "adapter": "kotlin" }]
   },
   "depends": {
-    "minecraft": ">=1.16-alpha.20.21.a",
+    "minecraft": "~1.16-alpha.20.22.a",
     "fabricloader": ">=0.4.0",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.3.30",
-    "hctm-base": "~3.1.0",
-    "libaddict": ">=0.1.2"
+    "hctm-base": "^3.1.0",
+    "libaddict": ">=0.2.1"
   },
   "suggests": {
     "rswires": ">=4.0.0"

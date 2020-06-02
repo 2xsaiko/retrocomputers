@@ -32,8 +32,8 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
   override fun getUuid(stack: ItemStack): UUID {
     val tag = stack.orCreateTag
-    if (!tag.containsUuidNew("uuid")) tag.putUuidNew("uuid", UUID.randomUUID())
-    return tag.getUuidNew("uuid")
+    if ("uuid" !in tag) tag.putUuid("uuid", UUID.randomUUID())
+    return tag.getUuid("uuid")
   }
 
   override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
@@ -73,7 +73,7 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
           for (i in sector - 1 downTo 0) {
             raf.seek(i * 128L)
             raf.read(buf)
-            if (Arrays.hashCode(buf) != emptyHash) {
+            if (buf.contentHashCode() != emptyHash) {
               raf.setLength((i + 1) * 128L)
               break
             }
