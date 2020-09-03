@@ -56,7 +56,7 @@ abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(set
     b.add(DIRECTION)
   }
 
-  override fun prepare(state: BlockState, world: WorldAccess, pos: BlockPos, flags: Int) {
+  override fun prepare(state: BlockState, world: WorldAccess, pos: BlockPos, flags: Int, maxUpdateDepth: Int) {
     if (!world.isClient && world is ServerWorld)
       world.getWireNetworkState().controller.onBlockChanged(world, pos, state)
   }

@@ -35,7 +35,6 @@ class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings),
 
   override fun onBundledInputChange(data: UShort, state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction) {
     (world.getBlockEntity(pos) as? RedstonePortEntity)?.input = data
-    super.onBundledInputChange(data, state, world, pos, side, edge)
   }
 
   override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {

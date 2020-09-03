@@ -38,7 +38,7 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
   override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
     if (index !in 0 until 2048) return null
-    val path = world.server.method_27050(WorldSavePath.ROOT).resolve("rcdisks").resolve(getUuid(stack).toString())
+    val path = world.server.getSavePath(WorldSavePath.ROOT).resolve("rcdisks").resolve(getUuid(stack).toString())
     Files.createDirectories(path.parent)
     return Sector(path, index)
   }

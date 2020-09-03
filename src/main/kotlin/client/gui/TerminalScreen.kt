@@ -181,7 +181,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   }
 
   override fun init() {
-    client!!.keyboard.enableRepeatEvents(true)
+    client!!.keyboard.setRepeatEvents(true)
 
     initDrawData()
     initFb()
@@ -232,7 +232,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   }
 
   override fun removed() {
-    client!!.keyboard.enableRepeatEvents(false)
+    client!!.keyboard.setRepeatEvents(false)
     fb?.delete()
     fb = null
   }
@@ -242,7 +242,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 }
 
 private fun createTexture(): Int {
-  val tex = TextureUtil.method_24956()
+  val tex = TextureUtil.generateId()
   RenderSystem.bindTexture(tex)
   RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
   RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
