@@ -12,10 +12,13 @@ import net.fabricmc.api.EnvType.CLIENT
 import net.fabricmc.api.EnvType.SERVER
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.loader.api.FabricLoader
+import org.apache.logging.log4j.LogManager
 
 const val MOD_ID = "retrocomputers"
 
 object RetroComputers : ModInitializer {
+
+  internal var logger = LogManager.getLogger(MOD_ID)
 
   lateinit var proxy: Proxy
 

@@ -19,7 +19,7 @@ object Shaders {
 
   fun screen() = screen
 
-  init {
+  fun init() {
     ResourceManagerHelper.get(CLIENT_RESOURCES).registerReloadListener(object : IdentifiableResourceReloadListener {
 
       override fun reload(s: Synchronizer, rm: ResourceManager, profiler: Profiler, profiler1: Profiler, executor: Executor, executor1: Executor): CompletableFuture<Void> {
