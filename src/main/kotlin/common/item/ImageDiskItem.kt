@@ -17,7 +17,7 @@ class ImageDiskItem(val image: Identifier, settings: Item.Settings) : Item(setti
   override fun getUuid(stack: ItemStack): UUID = UUID(0L, 0L)
 
   override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
-    val disk = RetroComputers.resources?.disks?.getValue(image) ?: return null
+    val disk = RetroComputers.resources?.disks?.get(image) ?: return null
     if (disk.size < (index + 1) * 128) return null
     val sector = disk.copyOfRange(index * 128, (index + 1) * 128)
     return Sector(sector)

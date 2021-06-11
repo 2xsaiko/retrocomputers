@@ -13,8 +13,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-import net.dblsaiko.hctm.init.RegistryObject;
 import net.dblsaiko.retrocomputers.RetroComputers;
+import net.dblsaiko.retrocomputers.common.item.ImageDiskItem;
 
 import static net.dblsaiko.retrocomputers.RetroComputersKt.MOD_ID;
 
@@ -33,11 +33,11 @@ public record Resources(
                     byte[] bootloader = loadImage(manager, "bootldr.bin");
                     byte[] charset = loadImage(manager, "charset.bin");
                     Map<Identifier, byte[]> disks =
-                        RetroComputers.INSTANCE.getItems().getSysDiskObjects()
+                        RetroComputers.INSTANCE.getItems().getSysDisks()
                             .stream()
                             .collect(Collectors.toUnmodifiableMap(
-                                RegistryObject::id,
-                                k -> loadImage(manager, "disks/%s.img".formatted(k.get().getImage().getPath()))
+                                ImageDiskItem::getImage,
+                                k -> loadImage(manager, "disks/%s.img".formatted(k.getImage().getPath()))
                             ));
                     return new Resources(bootloader, charset, disks);
                 }, executor);
