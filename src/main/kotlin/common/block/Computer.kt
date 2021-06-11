@@ -34,8 +34,6 @@ class ComputerBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), Blo
     }
 
     override fun tick(world: World, pos: BlockPos, state: BlockState, be: ComputerEntity) {
-        if (world.isClient) return
-
         be.cpu.timeout = false
         be.resetBusState()
 
@@ -56,7 +54,7 @@ class ComputerBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), Blo
     }
 
     override fun <T : BlockEntity> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
-        return if (type == RetroComputers.blockEntityTypes.computer) {
+        return if (!world.isClient && type == RetroComputers.blockEntityTypes.computer) {
             @Suppress("UNCHECKED_CAST")
             this as BlockEntityTicker<T>
         } else {

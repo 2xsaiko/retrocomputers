@@ -46,7 +46,6 @@ class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), Bl
 
     override fun tick(world: World, pos: BlockPos, state: BlockState, be: DiskDriveEntity) {
         val world = world as? ServerWorld ?: return
-        if (world.isClient) return
 
         var error = false
         val disk = be.disk()
@@ -125,7 +124,7 @@ class DiskDriveBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), Bl
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = DiskDriveEntity(pos, state)
 
     override fun <T : BlockEntity> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
-        return if (type == RetroComputers.blockEntityTypes.diskDrive) {
+        return if (world is ServerWorld && !world.isClient && type == RetroComputers.blockEntityTypes.diskDrive) {
             @Suppress("UNCHECKED_CAST")
             this as BlockEntityTicker<T>
         } else {

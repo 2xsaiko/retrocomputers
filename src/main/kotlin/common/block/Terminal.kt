@@ -44,7 +44,7 @@ class TerminalBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), Blo
     }
 
     override fun <T : BlockEntity?> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
-        return if (world.isClient && type == RetroComputers.blockEntityTypes.terminal) {
+        return if (!world.isClient && type == RetroComputers.blockEntityTypes.terminal) {
             @Suppress("UNCHECKED_CAST")
             this as BlockEntityTicker<T>
         } else {
