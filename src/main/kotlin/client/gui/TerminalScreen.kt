@@ -43,213 +43,213 @@ private const val scale = 8
 
 class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.retrocomputers.terminal")) {
 
-  private var uMvp = 0
-  private var uCharset = 0
-  private var uScreen = 0
-  private var aXyz = 0
-  private var aUv = 0
+    private var uMvp = 0
+    private var uCharset = 0
+    private var uScreen = 0
+    private var aXyz = 0
+    private var aUv = 0
 
-  private var fb: Framebuffer? = null
+    private var fb: Framebuffer? = null
 
-  override fun tick() {
-    val minecraft = client ?: return
-    val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.ofCenter(te.pos))
-               ?: Double.POSITIVE_INFINITY
-    if (dist > 10 * 10) minecraft.openScreen(null)
-  }
-
-  override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-    renderBackground(matrices)
-
-    val sh = Shaders.screen()
-    val fb = fb ?: return
-    val mc = client ?: return
-
-    fb.setTexFilter(if ((mc.window.scaleFactor.toInt() % 2) == 0) GL11.GL_NEAREST else GL11.GL_LINEAR)
-
-    fb.beginWrite(true)
-    val mat = Mat4.ortho(0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f)
-
-    GL30.glUseProgram(sh)
-    GL30.glBindVertexArray(vao)
-    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
-
-    GL20.glEnableVertexAttribArray(aXyz)
-    GL20.glEnableVertexAttribArray(aUv)
-
-    RenderSystem.activeTexture(GL13.GL_TEXTURE0)
-    RenderSystem.enableTexture()
-    RenderSystem.bindTexture(screenTex)
-
-    buf.clear()
-    val fbuf = buf.asFloatBuffer()
-    mat.intoBuffer(fbuf)
-    fbuf.flip()
-    GL30.glUniformMatrix4fv(uMvp, false, fbuf)
-
-    GL30.glUniform1i(uScreen, 0)
-
-    buf.clear()
-    buf.put(te.screen)
-
-    if (te.cm == 1 || (te.cm == 2 && (System.currentTimeMillis() / 500) % 2 == 0L)) {
-      val ci = te.cx + te.cy * 80
-      buf.put(ci, te.screen[ci] xor 0x80.toByte())
+    override fun tick() {
+        val minecraft = client ?: return
+        val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.ofCenter(te.pos))
+            ?: Double.POSITIVE_INFINITY
+        if (dist > 10 * 10) minecraft.openScreen(null)
     }
 
-    buf.rewind()
-    GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 80, 60, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
+    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+        renderBackground(matrices)
 
-    RenderSystem.activeTexture(GL13.GL_TEXTURE2)
-    RenderSystem.enableTexture()
-    RenderSystem.bindTexture(charsetTex)
-    GL30.glUniform1i(uCharset, 2)
+        val sh = Shaders.screen()
+        val fb = fb ?: return
+        val mc = client ?: return
 
-    buf.clear()
-    buf.put(te.charset)
-    buf.rewind()
-    GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 8, 256, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
+        fb.setTexFilter(if ((mc.window.scaleFactor.toInt() % 2) == 0) GL11.GL_NEAREST else GL11.GL_LINEAR)
 
-    GL11.glDrawArrays(GL_TRIANGLES, 0, 6)
+        fb.beginWrite(true)
+        val mat = Mat4.ortho(0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f)
 
-    GL20.glDisableVertexAttribArray(aXyz)
-    GL20.glDisableVertexAttribArray(aUv)
+        GL30.glUseProgram(sh)
+        GL30.glBindVertexArray(vao)
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
 
-    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0)
-    GL30.glBindVertexArray(0)
-    GL30.glUseProgram(0)
+        GL20.glEnableVertexAttribArray(aXyz)
+        GL20.glEnableVertexAttribArray(aUv)
 
-    RenderSystem.bindTexture(0)
-    RenderSystem.disableTexture()
-    RenderSystem.activeTexture(GL13.GL_TEXTURE0)
-    RenderSystem.bindTexture(0)
+        RenderSystem.activeTexture(GL13.GL_TEXTURE0)
+        RenderSystem.enableTexture()
+        RenderSystem.bindTexture(screenTex)
 
-    mc.framebuffer.beginWrite(true)
-    fb.method_35610()
+        buf.clear()
+        val fbuf = buf.asFloatBuffer()
+        mat.intoBuffer(fbuf)
+        fbuf.flip()
+        GL30.glUniformMatrix4fv(uMvp, false, fbuf)
 
-    val swidth = 8 * 80 * 0.5f
-    val sheight = 8 * 50 * 0.5f
-    val x1 = round(width / 2.0f - swidth / 2.0f)
-    val y1 = round(height / 2.0f - sheight / 2.0f)
+        GL30.glUniform1i(uScreen, 0)
 
-    val t = Tessellator.getInstance()
-    val buf = t.buffer
-    buf.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
-    buf.vertex(matrices.peek().model, x1, y1, 0.0f).texture(0f, 1f).next()
-    buf.vertex(matrices.peek().model, x1, y1 + sheight, 0.0f).texture(0f, 0f).next()
-    buf.vertex(matrices.peek().model, x1 + swidth, y1 + sheight, 0.0f).texture(1f, 0f).next()
-    buf.vertex(matrices.peek().model, x1 + swidth, y1, 0.0f).texture(1f, 1f).next()
-    t.draw()
-  }
+        buf.clear()
+        buf.put(te.screen)
 
-  override fun keyPressed(key: Int, scancode: Int, modifiers: Int): Boolean {
-    if (super.keyPressed(key, scancode, modifiers)) return true
+        if (te.cm == 1 || (te.cm == 2 && (System.currentTimeMillis() / 500) % 2 == 0L)) {
+            val ci = te.cx + te.cy * 80
+            buf.put(ci, te.screen[ci] xor 0x80.toByte())
+        }
 
-    val result: Byte? = when (key) {
-      GLFW.GLFW_KEY_BACKSPACE -> 0x08
-      GLFW.GLFW_KEY_ENTER -> 0x0D
-      GLFW.GLFW_KEY_HOME -> 0x80
-      GLFW.GLFW_KEY_END -> 0x81
-      GLFW.GLFW_KEY_UP -> 0x82
-      GLFW.GLFW_KEY_DOWN -> 0x83
-      GLFW.GLFW_KEY_LEFT -> 0x84
-      GLFW.GLFW_KEY_RIGHT -> 0x85
-      else -> null
-    }?.toByte()
+        buf.rewind()
+        GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 80, 60, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
 
-    if (result != null) pushKey(result)
+        RenderSystem.activeTexture(GL13.GL_TEXTURE2)
+        RenderSystem.enableTexture()
+        RenderSystem.bindTexture(charsetTex)
+        GL30.glUniform1i(uCharset, 2)
 
-    return result != null
-  }
+        buf.clear()
+        buf.put(te.charset)
+        buf.rewind()
+        GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 8, 256, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
 
-  override fun charTyped(c: Char, modifiers: Int): Boolean {
-    if (super.charTyped(c, modifiers)) return true
+        GL11.glDrawArrays(GL_TRIANGLES, 0, 6)
 
-    val result: Byte? = when (c) {
-      in '\u0001'..'\u007F' -> c.code.toByte()
-      else -> null
+        GL20.glDisableVertexAttribArray(aXyz)
+        GL20.glDisableVertexAttribArray(aUv)
+
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0)
+        GL30.glBindVertexArray(0)
+        GL30.glUseProgram(0)
+
+        RenderSystem.bindTexture(0)
+        RenderSystem.disableTexture()
+        RenderSystem.activeTexture(GL13.GL_TEXTURE0)
+        RenderSystem.bindTexture(0)
+
+        mc.framebuffer.beginWrite(true)
+        fb.method_35610()
+
+        val swidth = 8 * 80 * 0.5f
+        val sheight = 8 * 50 * 0.5f
+        val x1 = round(width / 2.0f - swidth / 2.0f)
+        val y1 = round(height / 2.0f - sheight / 2.0f)
+
+        val t = Tessellator.getInstance()
+        val buf = t.buffer
+        buf.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
+        buf.vertex(matrices.peek().model, x1, y1, 0.0f).texture(0f, 1f).next()
+        buf.vertex(matrices.peek().model, x1, y1 + sheight, 0.0f).texture(0f, 0f).next()
+        buf.vertex(matrices.peek().model, x1 + swidth, y1 + sheight, 0.0f).texture(1f, 0f).next()
+        buf.vertex(matrices.peek().model, x1 + swidth, y1, 0.0f).texture(1f, 1f).next()
+        t.draw()
     }
 
-    if (result != null) pushKey(result)
+    override fun keyPressed(key: Int, scancode: Int, modifiers: Int): Boolean {
+        if (super.keyPressed(key, scancode, modifiers)) return true
 
-    return result != null
-  }
+        val result: Byte? = when (key) {
+            GLFW.GLFW_KEY_BACKSPACE -> 0x08
+            GLFW.GLFW_KEY_ENTER -> 0x0D
+            GLFW.GLFW_KEY_HOME -> 0x80
+            GLFW.GLFW_KEY_END -> 0x81
+            GLFW.GLFW_KEY_UP -> 0x82
+            GLFW.GLFW_KEY_DOWN -> 0x83
+            GLFW.GLFW_KEY_LEFT -> 0x84
+            GLFW.GLFW_KEY_RIGHT -> 0x85
+            else -> null
+        }?.toByte()
 
-  private fun pushKey(c: Byte) {
-    val buffer = PacketByteBuf(Unpooled.buffer())
-    buffer.writeBlockPos(te.pos)
-    buffer.writeByte(c.toInt())
-    ClientPlayNetworking.send(Packets.Server.TERMINAL_KEY_TYPED, buffer)
-  }
+        if (result != null) pushKey(result)
 
-  override fun init() {
-    client!!.keyboard.setRepeatEvents(true)
+        return result != null
+    }
 
-    initDrawData()
-    initFb()
-  }
+    override fun charTyped(c: Char, modifiers: Int): Boolean {
+        if (super.charTyped(c, modifiers)) return true
 
-  private fun initDrawData() {
-    val sh = Shaders.screen()
+        val result: Byte? = when (c) {
+            in '\u0001'..'\u007F' -> c.code.toByte()
+            else -> null
+        }
 
-    GL30.glUseProgram(sh)
-    GL30.glBindVertexArray(vao)
-    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
+        if (result != null) pushKey(result)
 
-    uMvp = GL30.glGetUniformLocation(sh, "mvp")
-    uCharset = GL30.glGetUniformLocation(sh, "charset")
-    uScreen = GL30.glGetUniformLocation(sh, "screen")
+        return result != null
+    }
 
-    aXyz = GL30.glGetAttribLocation(sh, "xyz")
-    aUv = GL30.glGetAttribLocation(sh, "uv")
+    private fun pushKey(c: Byte) {
+        val buffer = PacketByteBuf(Unpooled.buffer())
+        buffer.writeBlockPos(te.pos)
+        buffer.writeByte(c.toInt())
+        ClientPlayNetworking.send(Packets.Server.TERMINAL_KEY_TYPED, buffer)
+    }
 
-    GL20.glVertexAttribPointer(aXyz, 3, GL_FLOAT, false, 20, 0)
-    GL20.glVertexAttribPointer(aUv, 2, GL_FLOAT, false, 20, 12)
+    override fun init() {
+        client!!.keyboard.setRepeatEvents(true)
 
-    buf.clear()
+        initDrawData()
+        initFb()
+    }
 
-    floatArrayOf(
-      0f, 0f, 0f, 0f, 0f,
-      1f, 1f, 0f, 1f, 1f,
-      1f, 0f, 0f, 1f, 0f,
+    private fun initDrawData() {
+        val sh = Shaders.screen()
 
-      0f, 0f, 0f, 0f, 0f,
-      0f, 1f, 0f, 0f, 1f,
-      1f, 1f, 0f, 1f, 1f
-    ).forEach { buf.putFloat(it) }
+        GL30.glUseProgram(sh)
+        GL30.glBindVertexArray(vao)
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo)
 
-    buf.rewind()
+        uMvp = GL30.glGetUniformLocation(sh, "mvp")
+        uCharset = GL30.glGetUniformLocation(sh, "charset")
+        uScreen = GL30.glGetUniformLocation(sh, "screen")
 
-    GL30.glBufferData(GL30.GL_ARRAY_BUFFER, buf, GL15.GL_STATIC_DRAW)
+        aXyz = GL30.glGetAttribLocation(sh, "xyz")
+        aUv = GL30.glGetAttribLocation(sh, "uv")
 
-    GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0)
-    GL30.glBindVertexArray(0)
-    GL30.glUseProgram(0)
-  }
+        GL20.glVertexAttribPointer(aXyz, 3, GL_FLOAT, false, 20, 0)
+        GL20.glVertexAttribPointer(aUv, 2, GL_FLOAT, false, 20, 12)
 
-  private fun initFb() {
-    fb?.delete()
-    val scale = 4
-    fb = SimpleFramebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
-  }
+        buf.clear()
 
-  override fun removed() {
-    client!!.keyboard.setRepeatEvents(false)
-    fb?.delete()
-    fb = null
-  }
+        floatArrayOf(
+            0f, 0f, 0f, 0f, 0f,
+            1f, 1f, 0f, 1f, 1f,
+            1f, 0f, 0f, 1f, 0f,
 
-  override fun isPauseScreen() = false
+            0f, 0f, 0f, 0f, 0f,
+            0f, 1f, 0f, 0f, 1f,
+            1f, 1f, 0f, 1f, 1f
+        ).forEach { buf.putFloat(it) }
+
+        buf.rewind()
+
+        GL30.glBufferData(GL30.GL_ARRAY_BUFFER, buf, GL15.GL_STATIC_DRAW)
+
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0)
+        GL30.glBindVertexArray(0)
+        GL30.glUseProgram(0)
+    }
+
+    private fun initFb() {
+        fb?.delete()
+        val scale = 4
+        fb = SimpleFramebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
+    }
+
+    override fun removed() {
+        client!!.keyboard.setRepeatEvents(false)
+        fb?.delete()
+        fb = null
+    }
+
+    override fun isPauseScreen() = false
 
 }
 
 private fun createTexture(): Int {
-  val tex = TextureUtil.generateTextureId()
-  RenderSystem.bindTexture(tex)
-  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
-  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
-  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
-  RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
-  RenderSystem.bindTexture(0)
-  return tex
+    val tex = TextureUtil.generateTextureId()
+    RenderSystem.bindTexture(tex)
+    RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+    RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+    RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT)
+    RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT)
+    RenderSystem.bindTexture(0)
+    return tex
 }

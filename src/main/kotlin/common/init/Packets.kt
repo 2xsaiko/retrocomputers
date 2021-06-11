@@ -7,15 +7,15 @@ import net.minecraft.util.Identifier
 
 object Packets {
 
-  object Client {
-  }
+    object Client {
+    }
 
-  object Server {
-    val TERMINAL_KEY_TYPED = Identifier(MOD_ID, "terminal_key")
-  }
+    object Server {
+        val TERMINAL_KEY_TYPED = Identifier(MOD_ID, "terminal_key")
+    }
 
-  fun register() {
-    ServerPlayNetworking.registerGlobalReceiver(Server.TERMINAL_KEY_TYPED, ::onKeyTypedTerminal)
-  }
+    fun register() {
+        ServerPlayNetworking.registerGlobalReceiver(Server.TERMINAL_KEY_TYPED, ::onKeyTypedTerminal)
+    }
 
 }

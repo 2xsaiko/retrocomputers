@@ -77,63 +77,63 @@ class ComputerEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroCo
     override val isBusConnected: Boolean
         get() = cachedBus != null
 
-  private var cachedBus: Device? = null
+    private var cachedBus: Device? = null
 
-  private var busFailed = false
+    private var busFailed = false
 
-  init {
-    mem[0] = 2 // Disk Drive (bus id $02)
-    mem[1] = 1 // Terminal (bus id $01)
-  }
-
-  override fun readData(at: Byte): Byte {
-    if (!allowWrite) return 0
-    return memRead((at.unsigned + writePos.unsigned).toShort())
-  }
-
-  override fun storeData(at: Byte, data: Byte) {
-    if (!allowWrite) return
-    memStore((at.unsigned + writePos.unsigned).toShort(), data)
-  }
-
-  override fun bus(): Device? {
-    cachedBus?.also { return it }
-    val world = getWorld() ?: return null
-    val net = accessIoNet(world, getPos(), MachinePartExt) ?: return null
-    return net.device(targetBus).also { cachedBus = it }
-  }
-
-  override fun resetBusState() {
-    busFailed = false
-    cachedBus = null
-  }
-
-  override var allowWrite: Boolean = true
-
-  override var writePos: Short = 0
-
-  override fun memRead(at: Short): Byte {
-    val addr = at.unsigned
-    val memBank = addr / 8192
-    val localAddr = addr % 8192
-    return if (memBank == 0) {
-      mem[localAddr]
-    } else {
-      // TODO: implement backplanes
-      0
+    init {
+        mem[0] = 2 // Disk Drive (bus id $02)
+        mem[1] = 1 // Terminal (bus id $01)
     }
-  }
 
-  override fun memStore(at: Short, data: Byte) {
-      val addr = at.unsigned
-      val memBank = addr / 8192
-      val localAddr = addr % 8192
-      return if (memBank == 0) {
-          mem[localAddr] = data
-      } else {
-          // TODO: implement backplanes
-      }
-  }
+    override fun readData(at: Byte): Byte {
+        if (!allowWrite) return 0
+        return memRead((at.unsigned + writePos.unsigned).toShort())
+    }
+
+    override fun storeData(at: Byte, data: Byte) {
+        if (!allowWrite) return
+        memStore((at.unsigned + writePos.unsigned).toShort(), data)
+    }
+
+    override fun bus(): Device? {
+        cachedBus?.also { return it }
+        val world = getWorld() ?: return null
+        val net = accessIoNet(world, getPos(), MachinePartExt) ?: return null
+        return net.device(targetBus).also { cachedBus = it }
+    }
+
+    override fun resetBusState() {
+        busFailed = false
+        cachedBus = null
+    }
+
+    override var allowWrite: Boolean = true
+
+    override var writePos: Short = 0
+
+    override fun memRead(at: Short): Byte {
+        val addr = at.unsigned
+        val memBank = addr / 8192
+        val localAddr = addr % 8192
+        return if (memBank == 0) {
+            mem[localAddr]
+        } else {
+            // TODO: implement backplanes
+            0
+        }
+    }
+
+    override fun memStore(at: Short, data: Byte) {
+        val addr = at.unsigned
+        val memBank = addr / 8192
+        val localAddr = addr % 8192
+        return if (memBank == 0) {
+            mem[localAddr] = data
+        } else {
+            // TODO: implement backplanes
+        }
+    }
 
     override fun writeNbt(tag: NbtCompound): NbtCompound {
         tag.put("cpu", cpu.toTag(NbtCompound()))

@@ -36,87 +36,87 @@ import net.minecraft.world.WorldAccess
 
 abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(settings), BlockPartProvider {
 
-  init {
-    this.defaultState = this.defaultState.with(DIRECTION, NORTH)
-  }
+    init {
+        this.defaultState = this.defaultState.with(DIRECTION, NORTH)
+    }
 
-  override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-    return this.defaultState.with(DIRECTION, ctx.playerFacing.opposite)
-  }
+    override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
+        return this.defaultState.with(DIRECTION, ctx.playerFacing.opposite)
+    }
 
-  override fun getRenderType(p0: BlockState?) = MODEL
+    override fun getRenderType(p0: BlockState?) = MODEL
 
-  override fun rotate(state: BlockState, rotation: BlockRotation): BlockState =
-    state.with(DIRECTION, rotation.rotate(state.get<Direction>(DIRECTION) as Direction))
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState =
+        state.with(DIRECTION, rotation.rotate(state.get<Direction>(DIRECTION) as Direction))
 
-  override fun mirror(state: BlockState, mirror: BlockMirror): BlockState =
-    state.rotate(mirror.getRotation(state.get<Direction>(DIRECTION) as Direction))
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState =
+        state.rotate(mirror.getRotation(state.get<Direction>(DIRECTION) as Direction))
 
-  override fun appendProperties(b: Builder<Block, BlockState>) {
-    b.add(DIRECTION)
-  }
+    override fun appendProperties(b: Builder<Block, BlockState>) {
+        b.add(DIRECTION)
+    }
 
-  override fun prepare(state: BlockState, world: WorldAccess, pos: BlockPos, flags: Int, maxUpdateDepth: Int) {
-    if (!world.isClient && world is ServerWorld)
-      world.getWireNetworkState().controller.onBlockChanged(world, pos, state)
-  }
+    override fun prepare(state: BlockState, world: WorldAccess, pos: BlockPos, flags: Int, maxUpdateDepth: Int) {
+        if (!world.isClient && world is ServerWorld)
+            world.getWireNetworkState().controller.onBlockChanged(world, pos, state)
+    }
 
-  override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
-    return setOf(MachinePartExt)
-  }
+    override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
+        return setOf(MachinePartExt)
+    }
 
     override fun createExtFromTag(tag: NbtElement): PartExt? {
         return MachinePartExt
     }
 
-  companion object {
-    val DIRECTION = HorizontalFacingBlock.FACING
-  }
+    companion object {
+        val DIRECTION = HorizontalFacingBlock.FACING
+    }
 
 }
 
 object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
 
-  override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return find(ConnectionDiscoverers.FULL_BLOCK, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
-  }
+    override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
+        return find(ConnectionDiscoverers.FULL_BLOCK, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
+    }
 
     override fun toTag(): NbtElement = NbtByte.of(0)
 
-  private fun getBlockEnt(world: World, pos: BlockPos): BaseBlockEntity? {
-    return world.getBlockEntity(pos) as? BaseBlockEntity
-  }
-
-  override fun isBusId(world: World, pos: BlockPos, busId: Byte): Boolean {
-    return getBlockEnt(world, pos)?.busId == busId
-  }
-
-  override fun read(world: World, pos: BlockPos, at: Byte): Byte {
-    return getBlockEnt(world, pos)?.readData(at) ?: 0
-  }
-
-  override fun store(world: World, pos: BlockPos, at: Byte, data: Byte) {
-    getBlockEnt(world, pos)?.storeData(at, data)
-  }
-
-  override fun cached(world: World, pos: BlockPos): Cached? =
-    getBlockEnt(world, pos)?.let(::Cached)
-
-  override fun hashCode(): Int = super.hashCode()
-
-  override fun equals(other: Any?): Boolean = super.equals(other)
-
-  class Cached(val ent: BaseBlockEntity) : PartIoProvider.Cached {
-
-    override fun read(at: Byte): Byte {
-      return ent.readData(at)
+    private fun getBlockEnt(world: World, pos: BlockPos): BaseBlockEntity? {
+        return world.getBlockEntity(pos) as? BaseBlockEntity
     }
 
-    override fun store(at: Byte, data: Byte) {
-      ent.storeData(at, data)
+    override fun isBusId(world: World, pos: BlockPos, busId: Byte): Boolean {
+        return getBlockEnt(world, pos)?.busId == busId
     }
 
-  }
+    override fun read(world: World, pos: BlockPos, at: Byte): Byte {
+        return getBlockEnt(world, pos)?.readData(at) ?: 0
+    }
+
+    override fun store(world: World, pos: BlockPos, at: Byte, data: Byte) {
+        getBlockEnt(world, pos)?.storeData(at, data)
+    }
+
+    override fun cached(world: World, pos: BlockPos): Cached? =
+        getBlockEnt(world, pos)?.let(::Cached)
+
+    override fun hashCode(): Int = super.hashCode()
+
+    override fun equals(other: Any?): Boolean = super.equals(other)
+
+    class Cached(val ent: BaseBlockEntity) : PartIoProvider.Cached {
+
+        override fun read(at: Byte): Byte {
+            return ent.readData(at)
+        }
+
+        override fun store(at: Byte, data: Byte) {
+            ent.storeData(at, data)
+        }
+
+    }
 
 }
 

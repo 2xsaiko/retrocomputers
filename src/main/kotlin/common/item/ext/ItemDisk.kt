@@ -6,18 +6,18 @@ import java.util.*
 
 interface ItemDisk {
 
-  fun getLabel(stack: ItemStack): String
+    fun getLabel(stack: ItemStack): String
 
-  fun setLabel(stack: ItemStack, str: String)
+    fun setLabel(stack: ItemStack, str: String)
 
-  fun getUuid(stack: ItemStack): UUID
+    fun getUuid(stack: ItemStack): UUID
 
-  fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector?
+    fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector?
 
-  interface Sector : AutoCloseable {
-    val data: ByteArray
+    interface Sector : AutoCloseable {
+        val data: ByteArray
 
-    fun isEmpty(): Boolean
-  }
+        fun isEmpty(): Boolean
+    }
 
 }

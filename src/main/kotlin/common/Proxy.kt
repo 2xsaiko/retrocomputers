@@ -6,22 +6,22 @@ import net.minecraft.client.MinecraftClient
 
 interface Proxy {
 
-  fun openTerminalScreen(te: TerminalEntity)
+    fun openTerminalScreen(te: TerminalEntity)
 
 }
 
 class ClientProxy : Proxy {
 
-  val mc = MinecraftClient.getInstance()
+    val mc = MinecraftClient.getInstance()
 
-  override fun openTerminalScreen(te: TerminalEntity) {
-    mc.openScreen(TerminalScreen(te))
-  }
+    override fun openTerminalScreen(te: TerminalEntity) {
+        mc.openScreen(TerminalScreen(te))
+    }
 
 }
 
 class ServerProxy : Proxy {
 
-  override fun openTerminalScreen(te: TerminalEntity) {}
+    override fun openTerminalScreen(te: TerminalEntity) {}
 
 }

@@ -22,22 +22,22 @@ import net.minecraft.util.math.Direction
 
 class RibbonCableBlock(settings: AbstractBlock.Settings) : SingleBaseWireBlock(settings, 1 / 16f) {
 
-  override fun createPartExtFromSide(side: Direction) = RibbonCablePartExt(side)
+    override fun createPartExtFromSide(side: Direction) = RibbonCablePartExt(side)
 
-  override fun createBlockEntity(pos: BlockPos, state: BlockState) = BaseWireBlockEntity(RetroComputers.blockEntityTypes.ribbonCable, pos, state)
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = BaseWireBlockEntity(RetroComputers.blockEntityTypes.ribbonCable, pos, state)
 
 }
 
 data class RibbonCablePartExt(override val side: Direction) : PartExt, WirePartExtType, PartIoCarrier {
-  override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    return find(ConnectionDiscoverers.WIRE, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
-  }
+    override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
+        return find(ConnectionDiscoverers.WIRE, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
+    }
 
-  override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
-    WireUtils.updateClient(world, pos)
-  }
+    override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
+        WireUtils.updateClient(world, pos)
+    }
 
-  override fun toTag(): NbtElement {
-    return NbtByte.of(side.id.toByte())
-  }
+    override fun toTag(): NbtElement {
+        return NbtByte.of(side.id.toByte())
+    }
 }

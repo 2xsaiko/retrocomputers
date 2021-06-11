@@ -14,74 +14,74 @@ import java.util.*
 
 class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
 
-  override fun getName(stack: ItemStack): Text {
-    if (hasLabel(stack)) return LiteralText(getLabel(stack))
+    override fun getName(stack: ItemStack): Text {
+        if (hasLabel(stack)) return LiteralText(getLabel(stack))
 
-    return super.getName(stack)
-  }
-
-  override fun getLabel(stack: ItemStack): String {
-    return if (hasLabel(stack)) stack.orCreateTag.getString("disk_name") else "Disk"
-  }
-
-  override fun setLabel(stack: ItemStack, str: String) {
-    stack.orCreateTag.putString("disk_name", str)
-  }
-
-  fun hasLabel(stack: ItemStack): Boolean = stack.tag?.contains("disk_name") ?: false
-
-  override fun getUuid(stack: ItemStack): UUID {
-    val tag = stack.orCreateTag
-    if ("uuid" !in tag) tag.putUuid("uuid", UUID.randomUUID())
-    return tag.getUuid("uuid")
-  }
-
-  override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
-    if (index !in 0 until 2048) return null
-    val path = world.server.getSavePath(WorldSavePath.ROOT).resolve("rcdisks").resolve(getUuid(stack).toString())
-    Files.createDirectories(path.parent)
-    return Sector(path, index)
-  }
-
-  class Sector(path: Path, val sector: Int) : ItemDisk.Sector {
-
-    override val data = ByteArray(128)
-
-    private val raf = RandomAccessFile(path.toFile(), "rw")
-
-    private val csum = data.contentHashCode()
-
-    init {
-      if (raf.length() >= (sector + 1) * 128) {
-        raf.seek(sector * 128L)
-        raf.read(data)
-      }
+        return super.getName(stack)
     }
 
-    override fun isEmpty() = raf.length() <= sector * 128L
+    override fun getLabel(stack: ItemStack): String {
+        return if (hasLabel(stack)) stack.orCreateTag.getString("disk_name") else "Disk"
+    }
 
-    override fun close() {
-      val hashCode = data.contentHashCode()
-      if (hashCode != csum) {
-        val emptyHash = -474025983
+    override fun setLabel(stack: ItemStack, str: String) {
+        stack.orCreateTag.putString("disk_name", str)
+    }
 
-        raf.seek(sector * 128L)
-        raf.write(data)
+    fun hasLabel(stack: ItemStack): Boolean = stack.tag?.contains("disk_name") ?: false
 
-        if (hashCode == emptyHash) {
-          val buf = ByteArray(128)
-          for (i in sector - 1 downTo 0) {
-            raf.seek(i * 128L)
-            raf.read(buf)
-            if (buf.contentHashCode() != emptyHash) {
-              raf.setLength((i + 1) * 128L)
-              break
+    override fun getUuid(stack: ItemStack): UUID {
+        val tag = stack.orCreateTag
+        if ("uuid" !in tag) tag.putUuid("uuid", UUID.randomUUID())
+        return tag.getUuid("uuid")
+    }
+
+    override fun sector(stack: ItemStack, world: ServerWorld, index: Int): Sector? {
+        if (index !in 0 until 2048) return null
+        val path = world.server.getSavePath(WorldSavePath.ROOT).resolve("rcdisks").resolve(getUuid(stack).toString())
+        Files.createDirectories(path.parent)
+        return Sector(path, index)
+    }
+
+    class Sector(path: Path, val sector: Int) : ItemDisk.Sector {
+
+        override val data = ByteArray(128)
+
+        private val raf = RandomAccessFile(path.toFile(), "rw")
+
+        private val csum = data.contentHashCode()
+
+        init {
+            if (raf.length() >= (sector + 1) * 128) {
+                raf.seek(sector * 128L)
+                raf.read(data)
             }
-          }
         }
-      }
-      raf.close()
+
+        override fun isEmpty() = raf.length() <= sector * 128L
+
+        override fun close() {
+            val hashCode = data.contentHashCode()
+            if (hashCode != csum) {
+                val emptyHash = -474025983
+
+                raf.seek(sector * 128L)
+                raf.write(data)
+
+                if (hashCode == emptyHash) {
+                    val buf = ByteArray(128)
+                    for (i in sector - 1 downTo 0) {
+                        raf.seek(i * 128L)
+                        raf.read(buf)
+                        if (buf.contentHashCode() != emptyHash) {
+                            raf.setLength((i + 1) * 128L)
+                            break
+                        }
+                    }
+                }
+            }
+            raf.close()
+        }
     }
-  }
 
 }
