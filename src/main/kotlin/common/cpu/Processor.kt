@@ -1,11 +1,11 @@
 package net.dblsaiko.retrocomputers.common.cpu
 
-import net.dblsaiko.retrocomputers.common.init.Resources
+import net.dblsaiko.retrocomputers.RetroComputers
 import net.dblsaiko.retrocomputers.common.util.packByte
 import net.dblsaiko.retrocomputers.common.util.packShort
 import net.dblsaiko.retrocomputers.common.util.unpack
 import net.dblsaiko.retrocomputers.common.util.unsigned
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
@@ -37,7 +37,7 @@ class Processor(val host: ProcessorHost) {
   var stop = false
 
   init {
-    val loader = Resources.bootloader()
+      val loader = RetroComputers.resources!!.bootloader().clone()
     for (i in 0 until 0x100) host.memStore((i + 0x400).toShort(), loader[i])
 
     resetAddr = 0x0400
@@ -64,17 +64,17 @@ class Processor(val host: ProcessorHost) {
     rp = 0x02FF
   }
 
-  fun toTag(tag: CompoundTag): CompoundTag {
-    tag.putShort("a", rA.toShort())
-    tag.putByte("b", rB.toByte())
-    tag.putShort("x", rX.toShort())
-    tag.putShort("y", rX.toShort())
-    tag.putShort("i", rI.toShort())
-    tag.putShort("d", rD.toShort())
-    tag.putShort("sp", sp.toShort())
-    tag.putShort("rp", rp.toShort())
-    tag.putShort("pc", pc.toShort())
-    tag.putShort("ra", resetAddr.toShort())
+    fun toTag(tag: NbtCompound): NbtCompound {
+        tag.putShort("a", rA.toShort())
+        tag.putByte("b", rB.toByte())
+        tag.putShort("x", rX.toShort())
+        tag.putShort("y", rX.toShort())
+        tag.putShort("i", rI.toShort())
+        tag.putShort("d", rD.toShort())
+        tag.putShort("sp", sp.toShort())
+        tag.putShort("rp", rp.toShort())
+        tag.putShort("pc", pc.toShort())
+        tag.putShort("ra", resetAddr.toShort())
     tag.putShort("ba", brkAddr.toShort())
     tag.putShort("f", packShort(*flags))
     tag.putBoolean("t", timeout)
@@ -87,17 +87,17 @@ class Processor(val host: ProcessorHost) {
     return tag
   }
 
-  fun fromTag(tag: CompoundTag) {
-    rA = tag.getShort("a").unsigned
-    rB = tag.getByte("b").unsigned
-    rX = tag.getShort("x").unsigned
-    rY = tag.getShort("y").unsigned
-    rI = tag.getShort("i").unsigned
-    rD = tag.getShort("d").unsigned
-    sp = tag.getShort("sp").unsigned
-    rp = tag.getShort("rp").unsigned
-    pc = tag.getShort("pc").unsigned
-    resetAddr = tag.getShort("ra").unsigned
+    fun fromTag(tag: NbtCompound) {
+        rA = tag.getShort("a").unsigned
+        rB = tag.getByte("b").unsigned
+        rX = tag.getShort("x").unsigned
+        rY = tag.getShort("y").unsigned
+        rI = tag.getShort("i").unsigned
+        rD = tag.getShort("d").unsigned
+        sp = tag.getShort("sp").unsigned
+        rp = tag.getShort("rp").unsigned
+        pc = tag.getShort("pc").unsigned
+        resetAddr = tag.getShort("ra").unsigned
     brkAddr = tag.getShort("ba").unsigned
     unpack(tag.getShort("f")).copyInto(flags, endIndex = 9)
     timeout = tag.getBoolean("t")

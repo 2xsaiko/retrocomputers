@@ -2,7 +2,7 @@ package net.dblsaiko.retrocomputers.common.init
 
 import net.dblsaiko.retrocomputers.MOD_ID
 import net.dblsaiko.retrocomputers.common.packet.server.onKeyTypedTerminal
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.util.Identifier
 
 object Packets {
@@ -15,7 +15,7 @@ object Packets {
   }
 
   fun register() {
-    ServerSidePacketRegistry.INSTANCE.register(Server.TERMINAL_KEY_TYPED, ::onKeyTypedTerminal)
+    ServerPlayNetworking.registerGlobalReceiver(Server.TERMINAL_KEY_TYPED, ::onKeyTypedTerminal)
   }
 
 }

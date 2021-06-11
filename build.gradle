@@ -8,9 +8,9 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10'
         classpath 'gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.9'
-        classpath 'fabric-loom:fabric-loom.gradle.plugin:0.5-SNAPSHOT'
+        classpath 'fabric-loom:fabric-loom.gradle.plugin:0.8.17'
     }
 }
 
@@ -19,13 +19,13 @@ apply plugin: 'org.jetbrains.gradle.plugin.idea-ext'
 apply plugin: 'fabric-loom'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-    kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.jvmTarget = '16'
     kotlinOptions.freeCompilerArgs += '-Xuse-experimental=kotlin.ExperimentalUnsignedTypes'
-    kotlinOptions.freeCompilerArgs += '-Xjvm-default=enable'
+    kotlinOptions.freeCompilerArgs += '-Xjvm-default=all'
 }
 
 archivesBaseName = project.archives_base_name
@@ -35,6 +35,7 @@ apply from: 'https://dblsaiko.net/pub/gradle/autoversion.gradle'
 
 repositories {
     maven { url 'https://maven.dblsaiko.net' }
+    maven { url 'https://maven.terraformersmc.com/releases/' }
 }
 
 dependencies {
@@ -75,7 +76,7 @@ dependencies {
     modImplementation group: "net.dblsaiko.qcommon.croco", name: "croco", version: croco_version
 
     modRuntime group: 'net.dblsaiko', name: 'winwonders', version: '0.1.2-4'
-    modRuntime(group: 'io.github.prospector', name: 'modmenu', version: '1.11.2+build.6') {
+    modRuntime(group: 'com.terraformersmc', name: 'modmenu', version: '2.0.0-beta.7') {
         exclude module: 'fabric-api'
     }
 }
@@ -83,13 +84,8 @@ dependencies {
 processResources {
     inputs.property 'version', project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'fabric.mod.json'
-        expand 'version': project.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'fabric.mod.json'
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
     }
 }
 

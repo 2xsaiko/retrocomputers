@@ -4,7 +4,7 @@ import net.dblsaiko.retrocomputers.MOD_ID
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.minecraft.resource.ResourceManager
-import net.minecraft.resource.ResourceReloadListener.Synchronizer
+import net.minecraft.resource.ResourceReloader.Synchronizer
 import net.minecraft.resource.ResourceType.CLIENT_RESOURCES
 import net.minecraft.util.Identifier
 import net.minecraft.util.profiler.Profiler
@@ -23,11 +23,11 @@ object Shaders {
     ResourceManagerHelper.get(CLIENT_RESOURCES).registerReloadListener(object : IdentifiableResourceReloadListener {
 
       override fun reload(s: Synchronizer, rm: ResourceManager, profiler: Profiler, profiler1: Profiler, executor: Executor, executor1: Executor): CompletableFuture<Void> {
-        return CompletableFuture.runAsync(Runnable {
-          if (screen != 0) GL30.glDeleteProgram(screen)
+          return CompletableFuture.runAsync({
+              if (screen != 0) GL30.glDeleteProgram(screen)
 
-          screen = loadShader(rm, "screen")
-        }, executor1).thenCompose<Void> { s.whenPrepared(null) }
+              screen = loadShader(rm, "screen")
+          }, executor1).thenCompose { s.whenPrepared(null) }
       }
 
       override fun getFabricId(): Identifier = Identifier(MOD_ID, "shaders")

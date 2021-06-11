@@ -1,59 +1,45 @@
 package net.dblsaiko.retrocomputers.common.init
 
 import net.dblsaiko.hctm.common.block.BaseWireItem
-import net.dblsaiko.hctm.common.util.delegatedNotNull
 import net.dblsaiko.hctm.common.util.flatten
+import net.dblsaiko.hctm.init.ItemRegistry
+import net.dblsaiko.hctm.init.RegistryObject
 import net.dblsaiko.retrocomputers.MOD_ID
 import net.dblsaiko.retrocomputers.common.item.ImageDiskItem
 import net.dblsaiko.retrocomputers.common.item.UserDiskItem
-import net.minecraft.block.Block
-import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.Item.Settings
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
-import kotlin.properties.ReadOnlyProperty
 
-object Items {
+class Items(blocks: Blocks, private val itemGroups: ItemGroups) {
+    private val reg = ItemRegistry(MOD_ID, Settings().group(itemGroups.all))
 
-  private val tasks = mutableListOf<() -> Unit>()
+    val sysDiskObjects = listOf(
+        "forth",
+        "extforth",
+        "minforth",
+        "decompiler",
+        "radio",
+        "retinal",
+        "sortron"
+    ).map(::createDisk)
 
-  val COMPUTER by create(Blocks.COMPUTER, "computer")
-  val TERMINAL by create(Blocks.TERMINAL, "terminal")
-  val DISK_DRIVE by create(Blocks.DISK_DRIVE, "disk_drive")
-  val REDSTONE_PORT by create(Blocks.REDSTONE_PORT, "redstone_port")
+    val computer by this.reg.create("computer", blocks.computerObject)
+    val terminal by this.reg.create("terminal", blocks.terminalObject)
+    val diskDrive by this.reg.create("disk_drive", blocks.diskDriveObject)
+    val redstonePort by this.reg.create("redstone_port", blocks.redstonePortObject)
 
-  val RIBBON_CABLE by create(BaseWireItem(Blocks.RIBBON_CABLE, Settings().group(ItemGroups.All)), "ribbon_cable")
+    val ribbonCable by this.reg.createThen("ribbon_cable") { BaseWireItem(blocks.ribbonCable, Settings().group(itemGroups.all)) }
 
-  val SYS_DISKS by listOf(
-    "forth",
-    "extforth",
-    "minforth",
-    "decompiler",
-    "radio",
-    "retinal",
-    "sortron"
-  ).map(::createDisk).flatten()
+    val sysDisks by this.sysDiskObjects.flatten()
 
-  val USER_DISK by create(UserDiskItem(), "user_disk")
+    val userDisk by this.reg.create("user_disk", UserDiskItem())
 
-  private fun <T : Block> create(block: T, name: String): ReadOnlyProperty<Items, BlockItem> {
-    return create(BlockItem(block, Settings().group(ItemGroups.All)), name)
-  }
+    private fun createDisk(path: String): RegistryObject<ImageDiskItem> {
+        return this.reg.create("disk_$path", ImageDiskItem(Identifier(MOD_ID, path), Item.Settings().maxCount(1).group(itemGroups.all)))
+    }
 
-  private fun <T : Item> create(item: T, name: String): ReadOnlyProperty<Items, T> {
-    var regItem: T? = null
-    tasks += { regItem = Registry.register(Registry.ITEM, Identifier(MOD_ID, name), item) }
-    return delegatedNotNull { regItem }
-  }
-
-  private fun createDisk(path: String): ReadOnlyProperty<Items, ImageDiskItem> {
-    return create(ImageDiskItem(Identifier(MOD_ID, path), Item.Settings().maxCount(1).group(ItemGroups.All)), "disk_$path")
-  }
-
-  internal fun register() {
-    tasks.forEach { it() }
-    tasks.clear()
-  }
-
+    internal fun register() {
+        this.reg.register()
+    }
 }

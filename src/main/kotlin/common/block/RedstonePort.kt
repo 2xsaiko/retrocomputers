@@ -2,11 +2,11 @@ package net.dblsaiko.retrocomputers.common.block
 
 import net.dblsaiko.hctm.common.api.BlockBundledCableIo
 import net.dblsaiko.hctm.common.wire.PartExt
-import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
+import net.dblsaiko.retrocomputers.RetroComputers
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.BlockState
 import net.minecraft.block.ShapeContext
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Direction.DOWN
@@ -17,9 +17,7 @@ import net.minecraft.world.World
 
 class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), BlockBundledCableIo {
 
-  override fun createBlockEntity(world: BlockView?): RedstonePortEntity {
-    return RedstonePortEntity()
-  }
+  override fun createBlockEntity(pos: BlockPos, state: BlockState) = RedstonePortEntity(pos, state)
 
   override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
     return super.getPartsInBlock(world, pos, state) // TODO
@@ -47,7 +45,7 @@ class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings),
 
 }
 
-class RedstonePortEntity : BaseBlockEntity(BlockEntityTypes.REDSTONE_PORT) {
+class RedstonePortEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroComputers.blockEntityTypes.redstonePort, pos, state) {
 
   override var busId: Byte = 3
 
@@ -71,14 +69,14 @@ class RedstonePortEntity : BaseBlockEntity(BlockEntityTypes.REDSTONE_PORT) {
     getWorld()?.updateNeighbor(getPos().offset(cachedState[BaseBlock.DIRECTION].opposite), cachedState.block, getPos())
   }
 
-  override fun toTag(tag: CompoundTag): CompoundTag {
+  override fun writeNbt(tag: NbtCompound): NbtCompound {
     tag.putShort("output", output.toShort())
     tag.putShort("input", input.toShort())
-    return super.toTag(tag)
+    return super.writeNbt(tag)
   }
 
-  override fun fromTag(state: BlockState, tag: CompoundTag) {
-    super.fromTag(state, tag)
+  override fun readNbt(tag: NbtCompound) {
+    super.readNbt(tag)
     output = tag.getShort("output").toUShort()
     input = tag.getShort("input").toUShort()
   }

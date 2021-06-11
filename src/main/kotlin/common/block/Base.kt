@@ -21,9 +21,9 @@ import net.minecraft.block.HorizontalFacingBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.item.ItemPlacementContext
-import net.minecraft.nbt.ByteTag
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.Tag
+import net.minecraft.nbt.NbtByte
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager.Builder
 import net.minecraft.util.BlockMirror
@@ -65,9 +65,9 @@ abstract class BaseBlock(settings: AbstractBlock.Settings) : BlockWithEntity(set
     return setOf(MachinePartExt)
   }
 
-  override fun createExtFromTag(tag: Tag): PartExt? {
-    return MachinePartExt
-  }
+    override fun createExtFromTag(tag: NbtElement): PartExt? {
+        return MachinePartExt
+    }
 
   companion object {
     val DIRECTION = HorizontalFacingBlock.FACING
@@ -81,7 +81,7 @@ object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
     return find(ConnectionDiscoverers.FULL_BLOCK, ConnectionFilter.forClass<PartIoCarrier>(), self, world, pos, nv)
   }
 
-  override fun toTag(): Tag = ByteTag.of(0)
+    override fun toTag(): NbtElement = NbtByte.of(0)
 
   private fun getBlockEnt(world: World, pos: BlockPos): BaseBlockEntity? {
     return world.getBlockEntity(pos) as? BaseBlockEntity
@@ -120,31 +120,31 @@ object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
 
 }
 
-abstract class BaseBlockEntity(type: BlockEntityType<*>) : BlockEntity(type), BlockEntityClientSerializable {
+abstract class BaseBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), BlockEntityClientSerializable {
 
-  abstract var busId: Byte
+    abstract var busId: Byte
 
-  abstract fun readData(at: Byte): Byte
+    abstract fun readData(at: Byte): Byte
 
-  abstract fun storeData(at: Byte, data: Byte)
+    abstract fun storeData(at: Byte, data: Byte)
 
-  override fun toClientTag(tag: CompoundTag): CompoundTag {
-    tag.putByte("bus_id", busId)
-    return tag
-  }
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
+        tag.putByte("bus_id", busId)
+        return tag
+    }
 
-  override fun fromClientTag(tag: CompoundTag) {
-    busId = tag.getByte("bus_id")
-  }
+    override fun fromClientTag(tag: NbtCompound) {
+        busId = tag.getByte("bus_id")
+    }
 
-  override fun toTag(tag: CompoundTag): CompoundTag {
-    tag.putByte("bus_id", busId)
-    return super.toTag(tag)
-  }
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
+        tag.putByte("bus_id", busId)
+        return super.writeNbt(tag)
+    }
 
-  override fun fromTag(state: BlockState, tag: CompoundTag) {
-    super.fromTag(state, tag)
-    busId = tag.getByte("bus_id")
-  }
+    override fun readNbt(tag: NbtCompound) {
+        super.readNbt(tag)
+        busId = tag.getByte("bus_id")
+    }
 
 }

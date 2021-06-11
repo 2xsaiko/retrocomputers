@@ -1,50 +1,81 @@
 package net.dblsaiko.retrocomputers.common.block
 
+import net.dblsaiko.retrocomputers.RetroComputers
 import net.dblsaiko.retrocomputers.common.block.wire.Device
 import net.dblsaiko.retrocomputers.common.block.wire.accessIoNet
 import net.dblsaiko.retrocomputers.common.cpu.Processor
 import net.dblsaiko.retrocomputers.common.cpu.ProcessorHost
-import net.dblsaiko.retrocomputers.common.init.BlockEntityTypes
 import net.dblsaiko.retrocomputers.common.util.unsigned
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.BlockState
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.ActionResult
 import net.minecraft.util.ActionResult.SUCCESS
 import net.minecraft.util.Hand
-import net.minecraft.util.Tickable
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class ComputerBlock(settings: AbstractBlock.Settings) : BaseBlock(settings) {
+class ComputerBlock(settings: AbstractBlock.Settings) : BaseBlock(settings), BlockEntityTicker<ComputerEntity> {
 
-  override fun createBlockEntity(view: BlockView) = ComputerEntity()
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = ComputerEntity(pos, state)
 
-  override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-    if (world.isClient) return SUCCESS
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        if (world.isClient) return SUCCESS
 
-    val ent = world.getBlockEntity(pos) as? ComputerEntity ?: return SUCCESS
-    ent.cpu.isRunning = !ent.cpu.isRunning
+        val ent = world.getBlockEntity(pos) as? ComputerEntity ?: return SUCCESS
+        ent.cpu.isRunning = !ent.cpu.isRunning
 
-    return SUCCESS
-  }
+        return SUCCESS
+    }
 
+    override fun tick(world: World, pos: BlockPos, state: BlockState, be: ComputerEntity) {
+        if (world.isClient) return
+
+        be.cpu.timeout = false
+        be.resetBusState()
+
+        // FIXME run on other thread; use coroutines?
+
+        val speed = 100000
+        val cyclesPerTick = speed / 20
+        var counter = 0
+
+        for (i in 0 until cyclesPerTick) {
+            if (!be.cpu.isRunning) break
+            if (be.cpu.timeout) break
+            be.cpu.next()
+            counter++
+        }
+
+        if (counter > 0) be.markDirty()
+    }
+
+    override fun <T : BlockEntity> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
+        return if (type == RetroComputers.blockEntityTypes.computer) {
+            @Suppress("UNCHECKED_CAST")
+            this as BlockEntityTicker<T>
+        } else {
+            null
+        }
+    }
 }
 
-class ComputerEntity : BaseBlockEntity(BlockEntityTypes.COMPUTER), ProcessorHost, Tickable {
+class ComputerEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroComputers.blockEntityTypes.computer, pos, state), ProcessorHost {
 
-  val mem = ByteArray(8192)
-  val cpu = Processor(this) // TODO we don't need this on the client
+    val mem = ByteArray(8192)
+    val cpu = Processor(this) // TODO we don't need this on the client
 
-  override var busId: Byte = 0
+    override var busId: Byte = 0
 
-  override var targetBus: Byte = 0
+    override var targetBus: Byte = 0
 
-  override val isBusConnected: Boolean
-    get() = cachedBus != null
+    override val isBusConnected: Boolean
+        get() = cachedBus != null
 
   private var cachedBus: Device? = null
 
@@ -53,29 +84,6 @@ class ComputerEntity : BaseBlockEntity(BlockEntityTypes.COMPUTER), ProcessorHost
   init {
     mem[0] = 2 // Disk Drive (bus id $02)
     mem[1] = 1 // Terminal (bus id $01)
-  }
-
-  override fun tick() {
-    val world = getWorld() ?: return
-    if (world.isClient) return
-
-    cpu.timeout = false
-    resetBusState()
-
-    // FIXME run on other thread; use coroutines?
-
-    val speed = 100000
-    val cyclesPerTick = speed / 20
-    var counter = 0
-
-    for (i in 0 until cyclesPerTick) {
-      if (!cpu.isRunning) break
-      if (cpu.timeout) break
-      cpu.next()
-      counter++
-    }
-
-    if (counter > 0) markDirty()
   }
 
   override fun readData(at: Byte): Byte {
@@ -117,28 +125,28 @@ class ComputerEntity : BaseBlockEntity(BlockEntityTypes.COMPUTER), ProcessorHost
   }
 
   override fun memStore(at: Short, data: Byte) {
-    val addr = at.unsigned
-    val memBank = addr / 8192
-    val localAddr = addr % 8192
-    return if (memBank == 0) {
-      mem[localAddr] = data
-    } else {
-      // TODO: implement backplanes
+      val addr = at.unsigned
+      val memBank = addr / 8192
+      val localAddr = addr % 8192
+      return if (memBank == 0) {
+          mem[localAddr] = data
+      } else {
+          // TODO: implement backplanes
+      }
+  }
+
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
+        tag.put("cpu", cpu.toTag(NbtCompound()))
+        tag.putByteArray("mem", mem)
+        tag.putByte("target_bus", targetBus)
+        return super.writeNbt(tag)
     }
-  }
 
-  override fun toTag(tag: CompoundTag): CompoundTag {
-    tag.put("cpu", cpu.toTag(CompoundTag()))
-    tag.putByteArray("mem", mem)
-    tag.putByte("target_bus", targetBus)
-    return super.toTag(tag)
-  }
-
-  override fun fromTag(state: BlockState, tag: CompoundTag) {
-    super.fromTag(state, tag)
-    cpu.fromTag(tag.getCompound("cpu"))
-    tag.getByteArray("mem").copyInto(mem)
-    targetBus = tag.getByte("target_bus")
-  }
+    override fun readNbt(tag: NbtCompound) {
+        super.readNbt(tag)
+        cpu.fromTag(tag.getCompound("cpu"))
+        tag.getByteArray("mem").copyInto(mem)
+        targetBus = tag.getByte("target_bus")
+    }
 
 }

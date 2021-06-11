@@ -1,19 +1,21 @@
 package net.dblsaiko.retrocomputers.client.gui
 
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.platform.TextureUtil
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.buffer.Unpooled
 import net.dblsaiko.qcommon.croco.Mat4
 import net.dblsaiko.retrocomputers.client.init.Shaders
 import net.dblsaiko.retrocomputers.common.block.TerminalEntity
 import net.dblsaiko.retrocomputers.common.init.Packets
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.Framebuffer
+import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.VertexFormat.DrawMode
 import net.minecraft.client.render.VertexFormats
-import net.minecraft.client.texture.TextureUtil
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.text.TranslatableText
@@ -96,7 +98,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     }
 
     buf.rewind()
-    GlStateManager.texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 80, 60, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
+    GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 80, 60, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
 
     RenderSystem.activeTexture(GL13.GL_TEXTURE2)
     RenderSystem.enableTexture()
@@ -106,7 +108,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     buf.clear()
     buf.put(te.charset)
     buf.rewind()
-    GlStateManager.texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 8, 256, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
+    GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_R16I, 8, 256, 0, GL30.GL_RED_INTEGER, GL11.GL_UNSIGNED_BYTE, buf.asIntBuffer())
 
     GL11.glDrawArrays(GL_TRIANGLES, 0, 6)
 
@@ -123,7 +125,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     RenderSystem.bindTexture(0)
 
     mc.framebuffer.beginWrite(true)
-    fb.beginRead()
+    fb.method_35610()
 
     val swidth = 8 * 80 * 0.5f
     val sheight = 8 * 50 * 0.5f
@@ -132,7 +134,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 
     val t = Tessellator.getInstance()
     val buf = t.buffer
-    buf.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE)
+    buf.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
     buf.vertex(matrices.peek().model, x1, y1, 0.0f).texture(0f, 1f).next()
     buf.vertex(matrices.peek().model, x1, y1 + sheight, 0.0f).texture(0f, 0f).next()
     buf.vertex(matrices.peek().model, x1 + swidth, y1 + sheight, 0.0f).texture(1f, 0f).next()
@@ -164,9 +166,9 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     if (super.charTyped(c, modifiers)) return true
 
     val result: Byte? = when (c) {
-      in '\u0001'..'\u007F' -> c
+      in '\u0001'..'\u007F' -> c.code.toByte()
       else -> null
-    }?.toByte()
+    }
 
     if (result != null) pushKey(result)
 
@@ -177,7 +179,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
     val buffer = PacketByteBuf(Unpooled.buffer())
     buffer.writeBlockPos(te.pos)
     buffer.writeByte(c.toInt())
-    ClientSidePacketRegistry.INSTANCE.sendToServer(Packets.Server.TERMINAL_KEY_TYPED, buffer)
+    ClientPlayNetworking.send(Packets.Server.TERMINAL_KEY_TYPED, buffer)
   }
 
   override fun init() {
@@ -228,7 +230,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
   private fun initFb() {
     fb?.delete()
     val scale = 4
-    fb = Framebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
+    fb = SimpleFramebuffer(80 * 8 * scale, 50 * 8 * scale, false, MinecraftClient.IS_SYSTEM_MAC)
   }
 
   override fun removed() {
@@ -242,7 +244,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 }
 
 private fun createTexture(): Int {
-  val tex = TextureUtil.generateId()
+  val tex = TextureUtil.generateTextureId()
   RenderSystem.bindTexture(tex)
   RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
   RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
