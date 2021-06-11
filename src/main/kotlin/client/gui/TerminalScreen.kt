@@ -13,7 +13,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.Framebuffer
 import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.VertexFormat.DrawMode
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
@@ -125,21 +125,34 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
         RenderSystem.bindTexture(0)
 
         mc.framebuffer.beginWrite(true)
-        fb.method_35610()
 
-        val swidth = 8 * 80 * 0.5f
-        val sheight = 8 * 50 * 0.5f
-        val x1 = round(width / 2.0f - swidth / 2.0f)
-        val y1 = round(height / 2.0f - sheight / 2.0f)
+        val swidth = 8 * 80 * 0.5
+        val sheight = 8 * 50 * 0.5
+        val x1 = round(width / 2.0 - swidth / 2.0)
+        val y1 = round(height / 2.0 - sheight / 2.0)
 
-        val t = Tessellator.getInstance()
+        matrices.push()
+        matrices.translate(x1, y1, -2000.0) // why the -2000? not sure
+
+        val shader = mc.gameRenderer.blitScreenShader
+        shader.addSampler("DiffuseSampler", fb.colorAttachment)
+        shader.modelViewMat?.set(matrices.peek().model)
+        shader.projectionMat?.set(RenderSystem.getProjectionMatrix())
+        shader.upload()
+
+        val t = RenderSystem.renderThreadTesselator()
         val buf = t.buffer
-        buf.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
-        buf.vertex(matrices.peek().model, x1, y1, 0.0f).texture(0f, 1f).next()
-        buf.vertex(matrices.peek().model, x1, y1 + sheight, 0.0f).texture(0f, 0f).next()
-        buf.vertex(matrices.peek().model, x1 + swidth, y1 + sheight, 0.0f).texture(1f, 0f).next()
-        buf.vertex(matrices.peek().model, x1 + swidth, y1, 0.0f).texture(1f, 1f).next()
-        t.draw()
+        buf.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
+        buf.vertex(0.0, 0.0, 0.0).texture(0f, 1f).color(255, 255, 255, 255).next()
+        buf.vertex(0.0, sheight, 0.0).texture(0f, 0f).color(255, 255, 255, 255).next()
+        buf.vertex(swidth, sheight, 0.0).texture(1f, 0f).color(255, 255, 255, 255).next()
+        buf.vertex(swidth, 0.0, 0.0).texture(1f, 1f).color(255, 255, 255, 255).next()
+        buf.end()
+        BufferRenderer.postDraw(buf)
+
+        shader.bind() // actually unbind
+
+        matrices.pop()
     }
 
     override fun keyPressed(key: Int, scancode: Int, modifiers: Int): Boolean {
