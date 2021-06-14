@@ -1,6 +1,6 @@
 package net.dblsaiko.retrocomputers.common.block
 
-import net.dblsaiko.hctm.common.api.BlockBundledCableIo
+import net.dblsaiko.hctm.block.BlockBundledCableIo
 import net.dblsaiko.hctm.common.wire.PartExt
 import net.dblsaiko.retrocomputers.RetroComputers
 import net.minecraft.block.AbstractBlock
@@ -27,12 +27,12 @@ class RedstonePortBlock(settings: AbstractBlock.Settings) : BaseBlock(settings),
         return state[DIRECTION] == side && edge == DOWN
     }
 
-    override fun getBundledOutput(state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction): UShort {
-        return (world.getBlockEntity(pos) as? RedstonePortEntity)?.output ?: 0u
+    override fun getBundledOutput(state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction): Short {
+        return (world.getBlockEntity(pos) as? RedstonePortEntity)?.output?.toShort() ?: 0
     }
 
-    override fun onBundledInputChange(data: UShort, state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction) {
-        (world.getBlockEntity(pos) as? RedstonePortEntity)?.input = data
+    override fun onBundledInputChange(data: Short, state: BlockState, world: World, pos: BlockPos, side: Direction, edge: Direction) {
+        (world.getBlockEntity(pos) as? RedstonePortEntity)?.input = data.toUShort()
     }
 
     override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
