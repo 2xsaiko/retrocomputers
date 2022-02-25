@@ -11,7 +11,6 @@ import net.dblsaiko.hctm.common.wire.find
 import net.dblsaiko.hctm.common.wire.getWireNetworkState
 import net.dblsaiko.retrocomputers.common.block.wire.PartIoCarrier
 import net.dblsaiko.retrocomputers.common.block.wire.PartIoProvider
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType.MODEL
@@ -24,6 +23,7 @@ import net.minecraft.item.ItemPlacementContext
 import net.minecraft.nbt.NbtByte
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager.Builder
 import net.minecraft.util.BlockMirror
@@ -120,7 +120,7 @@ object MachinePartExt : PartExt, FullBlockPartExtType, PartIoProvider {
 
 }
 
-abstract class BaseBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state), BlockEntityClientSerializable {
+abstract class BaseBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: BlockState) : BlockEntity(type, pos, state) {
 
     abstract var busId: Byte
 
@@ -128,18 +128,9 @@ abstract class BaseBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: B
 
     abstract fun storeData(at: Byte, data: Byte)
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
+        super.writeNbt(tag)
         tag.putByte("bus_id", busId)
-        return tag
-    }
-
-    override fun fromClientTag(tag: NbtCompound) {
-        busId = tag.getByte("bus_id")
-    }
-
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
-        tag.putByte("bus_id", busId)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {
@@ -147,4 +138,11 @@ abstract class BaseBlockEntity(type: BlockEntityType<*>, pos: BlockPos, state: B
         busId = tag.getByte("bus_id")
     }
 
+    override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
+        return BlockEntityUpdateS2CPacket.create(this)
+    }
+
+    override fun toInitialChunkDataNbt(): NbtCompound {
+        return createNbt()
+    }
 }

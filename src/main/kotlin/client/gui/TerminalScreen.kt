@@ -55,7 +55,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
         val minecraft = client ?: return
         val dist = minecraft.player?.getCameraPosVec(1f)?.squaredDistanceTo(Vec3d.ofCenter(te.pos))
             ?: Double.POSITIVE_INFINITY
-        if (dist > 10 * 10) minecraft.openScreen(null)
+        if (dist > 10 * 10) minecraft.setScreen(null)
     }
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
@@ -136,9 +136,9 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
 
         val shader = mc.gameRenderer.blitScreenShader
         shader.addSampler("DiffuseSampler", fb.colorAttachment)
-        shader.modelViewMat?.set(matrices.peek().model)
+        shader.modelViewMat?.set(matrices.peek().positionMatrix)
         shader.projectionMat?.set(RenderSystem.getProjectionMatrix())
-        shader.upload()
+        shader.bind()
 
         val t = RenderSystem.renderThreadTesselator()
         val buf = t.buffer
@@ -150,7 +150,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
         buf.end()
         BufferRenderer.postDraw(buf)
 
-        shader.bind() // actually unbind
+        shader.unbind()
 
         matrices.pop()
     }
@@ -252,7 +252,7 @@ class TerminalScreen(val te: TerminalEntity) : Screen(TranslatableText("block.re
         fb = null
     }
 
-    override fun isPauseScreen() = false
+    override fun shouldPause() = false
 
 }
 

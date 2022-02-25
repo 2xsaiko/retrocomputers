@@ -69,10 +69,10 @@ class RedstonePortEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(Ret
         getWorld()?.updateNeighbor(getPos().offset(cachedState[BaseBlock.DIRECTION].opposite), cachedState.block, getPos())
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
+        super.writeNbt(tag)
         tag.putShort("output", output.toShort())
         tag.putShort("input", input.toShort())
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {

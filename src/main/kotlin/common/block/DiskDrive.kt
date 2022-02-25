@@ -206,9 +206,9 @@ class DiskDriveEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroC
         }
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
+        super.writeNbt(tag)
         tag.put("item", stack.writeNbt(NbtCompound()))
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {

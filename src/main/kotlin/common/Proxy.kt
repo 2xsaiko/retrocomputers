@@ -15,7 +15,7 @@ class ClientProxy : Proxy {
     val mc = MinecraftClient.getInstance()
 
     override fun openTerminalScreen(te: TerminalEntity) {
-        mc.openScreen(TerminalScreen(te))
+        mc.setScreen(TerminalScreen(te))
     }
 
 }

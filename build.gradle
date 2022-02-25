@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10'
         classpath 'gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext:0.9'
-        classpath 'fabric-loom:fabric-loom.gradle.plugin:0.8.17'
+        classpath 'fabric-loom:fabric-loom.gradle.plugin:0.10-SNAPSHOT'
     }
 }
 
@@ -60,9 +60,9 @@ dependencies {
     optionalProject ':hctm-base', group: 'net.dblsaiko', name: 'hctm-base', version: hctm_base_version
     include group: 'net.dblsaiko', name: 'hctm-base', version: hctm_base_version
 
-    modRuntime group: 'net.dblsaiko', name: 'rswires', version: rswires_version
+    modRuntimeOnly group: 'net.dblsaiko', name: 'rswires', version: rswires_version
 
-    modRuntime(group: 'net.dblsaiko.qcommon.cfg', name: 'cfg', version: cfg_version) {
+    modRuntimeOnly(group: 'net.dblsaiko.qcommon.cfg', name: 'cfg', version: cfg_version) {
         exclude group: 'net.fabricmc.fabric-api'
         exclude module: 'cfg-keys'
     }
@@ -75,8 +75,8 @@ dependencies {
 
     modImplementation group: "net.dblsaiko.qcommon.croco", name: "croco", version: croco_version
 
-    modRuntime group: 'net.dblsaiko', name: 'winwonders', version: '0.1.2-4'
-    modRuntime(group: 'com.terraformersmc', name: 'modmenu', version: '2.0.0-beta.7') {
+    modRuntimeOnly group: 'net.dblsaiko', name: 'winwonders', version: '0.1.2-4'
+    modRuntimeOnly(group: 'com.terraformersmc', name: 'modmenu', version: '2.0.0-beta.7') {
         exclude module: 'fabric-api'
     }
 }

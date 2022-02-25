@@ -21,17 +21,17 @@ class UserDiskItem : Item(Item.Settings().maxCount(1)), ItemDisk {
     }
 
     override fun getLabel(stack: ItemStack): String {
-        return if (hasLabel(stack)) stack.orCreateTag.getString("disk_name") else "Disk"
+        return if (hasLabel(stack)) stack.orCreateNbt.getString("disk_name") else "Disk"
     }
 
     override fun setLabel(stack: ItemStack, str: String) {
-        stack.orCreateTag.putString("disk_name", str)
+        stack.orCreateNbt.putString("disk_name", str)
     }
 
-    fun hasLabel(stack: ItemStack): Boolean = stack.tag?.contains("disk_name") ?: false
+    fun hasLabel(stack: ItemStack): Boolean = stack.nbt?.contains("disk_name") ?: false
 
     override fun getUuid(stack: ItemStack): UUID {
-        val tag = stack.orCreateTag
+        val tag = stack.orCreateNbt
         if ("uuid" !in tag) tag.putUuid("uuid", UUID.randomUUID())
         return tag.getUuid("uuid")
     }

@@ -133,11 +133,11 @@ class ComputerEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroCo
         }
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
+        super.writeNbt(tag)
         tag.put("cpu", cpu.toTag(NbtCompound()))
         tag.putByteArray("mem", mem)
         tag.putByte("target_bus", targetBus)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {

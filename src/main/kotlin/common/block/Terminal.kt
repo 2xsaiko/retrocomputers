@@ -150,26 +150,19 @@ class TerminalEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroCo
         markDirty()
     }
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
+    override fun toInitialChunkDataNbt(): NbtCompound {
+        val tag = super.toInitialChunkDataNbt()
         // these are big, TODO: only send changed data
         tag.putByteArray("screen", screen)
         tag.putByteArray("charset", charset)
         tag.putByte("cx", cx.toByte())
         tag.putByte("cy", cy.toByte())
         tag.putByte("cm", cm.toByte())
-        return super.toClientTag(tag)
+        return tag
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
-        super.fromClientTag(tag)
-        tag.getByteArray("screen").copyInto(screen)
-        tag.getByteArray("charset").copyInto(charset)
-        cx = tag.getByte("cx").unsigned
-        cy = tag.getByte("cy").unsigned
-        cm = tag.getByte("cm").unsigned
-    }
-
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
+        super.writeNbt(tag)
         tag.putByteArray("screen", screen)
         tag.putByteArray("charset", charset)
         tag.putByteArray("kb", kb)
@@ -187,28 +180,34 @@ class TerminalEntity(pos: BlockPos, state: BlockState) : BaseBlockEntity(RetroCo
         tag.putByte("bw", bw.toByte())
         tag.putByte("bh", bh.toByte())
         tag.putByte("char", char.toByte())
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
+        val world = getWorld()
+
         tag.getByteArray("screen").copyInto(screen)
         tag.getByteArray("charset").copyInto(charset)
-        tag.getByteArray("kb").copyInto(kb)
-        command = tag.getByte("command")
-        row = tag.getByte("row").unsigned
         cx = tag.getByte("cx").unsigned
         cy = tag.getByte("cy").unsigned
         cm = tag.getByte("cm").unsigned
-        kbs = tag.getByte("kbs").unsigned
-        kbp = tag.getByte("kbp").unsigned
-        bx1 = tag.getByte("bx1").unsigned
-        by1 = tag.getByte("by1").unsigned
-        bx2 = tag.getByte("bx2").unsigned
-        by2 = tag.getByte("by2").unsigned
-        bw = tag.getByte("bw").unsigned
-        bh = tag.getByte("bh").unsigned
-        char = tag.getByte("char").unsigned
+
+        if (world == null || !world.isClient) {
+            tag.getByteArray("screen").copyInto(screen)
+            tag.getByteArray("charset").copyInto(charset)
+            tag.getByteArray("kb").copyInto(kb)
+            command = tag.getByte("command")
+            row = tag.getByte("row").unsigned
+            kbs = tag.getByte("kbs").unsigned
+            kbp = tag.getByte("kbp").unsigned
+            bx1 = tag.getByte("bx1").unsigned
+            by1 = tag.getByte("by1").unsigned
+            bx2 = tag.getByte("bx2").unsigned
+            by2 = tag.getByte("by2").unsigned
+            bw = tag.getByte("bw").unsigned
+            bh = tag.getByte("bh").unsigned
+            char = tag.getByte("char").unsigned
+        }
     }
 
 }
